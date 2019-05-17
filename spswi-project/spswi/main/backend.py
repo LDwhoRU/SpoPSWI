@@ -92,12 +92,12 @@ class Spotify_Scrape:
         print("Done!")
         return self.master_tracks
 
-user = Spotify_Scrape(token)
+#user = Spotify_Scrape(token)
 
-#print(user.testSearch()) # test search connection
-#print(user.debugger()) # test followed artists connection
-##print(user.pullArtists()) # prints list with followed artist names
-##print(user.artistURIs()) # prints list of artist URIs
-print(user.albumURIs()) # returns list of artist URIs
-##print(user.albumTracks())
-#user.albumTracks()
+## print(user.testSearch()) # test search connection
+## print(user.debugger()) # test followed artists connection
+## print(user.pullArtists()) # prints list with followed artist names
+## print(user.artistURIs()) # prints list of artist URIs
+## print(user.albumURIs()) # returns list of artist URIs
+## print(user.albumTracks())
+## user.albumTracks()
