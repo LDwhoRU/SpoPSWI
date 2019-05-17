@@ -29,6 +29,7 @@ class Spotify_Scrape:
     artist_URI = [] # Unique identifier for artists in spotify API
     album_URI = [] # Unique identifier for albums in spotify API
     master_album = [] # master list of albums
+    album_data = [] # holds temp album data information for storage in master list
     master_tracks = [] # master list of tracks
 
     def __init__(self, user_token):
@@ -43,8 +44,26 @@ class Spotify_Scrape:
         self.results = sp.search(q='artist:' + self.test_artist, type='artist')
         return self.results["artists"]["items"][0]
 
-    def debugger(self): # returns followed artists to identify artist dictionary labels
-        return self.follows["artists"]["items"][0] # delete 0 for all artists
+    def debugger(self, variant): # returns followed artists to identify artist dictionary labels
+        if variant == 'artist':
+            return self.follows["artists"]["items"][0] # delete 0 for all artists
+        if variant == 'album':
+            self.artistURIs()
+            self.count = 0 # reset counter
+            for occurrence in range(self.num_artists):
+                self.entry = self.artist_URI[occurrence]
+                self.artist_albums = sp.artist_albums(self.entry, album_type='album', limit='50')
+                if occurrence == 4:
+                    try:
+                        for unique_album in range(len(self.artist_albums["items"])):
+                            self.master_album.append(self.artist_albums["items"][unique_album]['release_date']) # add ['release_date'] to test release date pull
+                    except IndexError:
+                        continue
+                elif occurrence == 5:
+                    break
+                else:
+                    continue
+            return self.master_album
 
     def pullArtists(self): # returns a list of every artist you follow
         self.count = -1 # reset counter
@@ -65,14 +84,17 @@ class Spotify_Scrape:
 
     def albumURIs(self):
         self.artistURIs()
-        self.count = 0 # need count from 0 for this loop
+        self.count = -1 # reset counter
         # Fetch Album URIs
         for occurrence in range(self.num_artists):
             self.entry = self.artist_URI[occurrence]
             self.artist_albums = sp.artist_albums(self.entry, album_type='album', limit='50')
             try:
                 for unique_album in range(len(self.artist_albums["items"])):
-                    self.master_album.append(self.artist_albums["items"][unique_album]) #["uri"]
+                    self.album_data.append(self.artist_albums["items"][unique_album]["uri"])
+                    self.album_data.append(self.artist_albums["items"][unique_album]["release_date"])
+                    self.master_album.append(self.album_data)
+                    self.album_data = []
             except IndexError:
                 continue
         return self.master_album
@@ -95,9 +117,10 @@ class Spotify_Scrape:
 user = Spotify_Scrape(token)
 
 #print(user.testSearch()) # test search connection
-#print(user.debugger()) # test followed artists connection
+#print(user.debugger('artist')) # test followed artists connection
+#print(user.debugger('album'))
 ##print(user.pullArtists()) # prints list with followed artist names
 ##print(user.artistURIs()) # prints list of artist URIs
 print(user.albumURIs()) # returns list of artist URIs
 ##print(user.albumTracks())
-#user.albumTracks()
+##user.albumTracks()
