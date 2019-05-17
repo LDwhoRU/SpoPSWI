@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from ...... import backend
+from spswi.main.backend import pullArtists
 
 main = Blueprint('main', __name__)
 
