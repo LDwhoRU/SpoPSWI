@@ -2,6 +2,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
+import codecs
 
 # app credentials
 cid ="244ce08ff106437f8e7565c2e796f4e3" 
@@ -20,7 +21,7 @@ if token:
 else:
     print("Token error for", username) # return error if token cannot be found
 
-class Spotify:
+class Spotify_Scrape:
 
     test_artist = 'Flume' # test search string
     count = -1 # counter used for loops
@@ -28,6 +29,7 @@ class Spotify:
     artist_URI = [] # Unique identifier for artists in spotify API
     album_URI = [] # Unique identifier for albums in spotify API
     master_album = [] # master list of albums
+    master_tracks = [] # master list of tracks
 
     def __init__(self, user_token):
         self.sp = spotipy.Spotify(auth=user_token)
@@ -70,15 +72,32 @@ class Spotify:
             self.artist_albums = sp.artist_albums(self.entry, album_type='album', limit='50')
             try:
                 for unique_album in range(len(self.artist_albums["items"])):
-                    self.master_album.append(self.artist_albums["items"][unique_album]["name"])
+                    self.master_album.append(self.artist_albums["items"][unique_album]) #["uri"]
             except IndexError:
                 continue
-        return self.master_album      
+        return self.master_album
 
-user = Spotify(token)
+    def albumTracks(self):
+        self.albumURIs()
+        for occurrence in range(len(self.master_album)):
+            self.unique_album_uri = self.master_album[occurrence]
+            self.album_tracks = sp.album_tracks(self.unique_album_uri)
+            try:
+                for unique_track in range(len(self.album_tracks["items"])):
+                    self.master_tracks.append(self.album_tracks)
+            except IndexError:
+                continue
+        with open("Output.txt", "w", encoding="utf-8") as text_file:
+            print(f"{self.master_tracks}", file=text_file)
+        print("Done!")
+        return self.master_tracks
 
-##print(user.testSearch()) # test search connection
-##print(user.debugger()) # test followed artists connection
+user = Spotify_Scrape(token)
+
+#print(user.testSearch()) # test search connection
+#print(user.debugger()) # test followed artists connection
 ##print(user.pullArtists()) # prints list with followed artist names
 ##print(user.artistURIs()) # prints list of artist URIs
-print(user.albumURIs())
+print(user.albumURIs()) # returns list of artist URIs
+##print(user.albumTracks())
+#user.albumTracks()
