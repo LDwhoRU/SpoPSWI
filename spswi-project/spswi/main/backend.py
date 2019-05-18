@@ -84,7 +84,7 @@ class Spotify_Scrape:
             self.album_tracks = sp.album_tracks(self.unique_album_uri)
             try:
                 for unique_track in range(len(self.album_tracks["items"])):
-                    self.master_tracks.append(self.album_tracks)
+                    self.mastfer_tracks.append(self.album_tracks)
             except IndexError:
                 continue
         with open("Output.txt", "w", encoding="utf-8") as text_file:

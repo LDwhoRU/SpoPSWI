@@ -11,9 +11,21 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-        <img class="navbar-brand spotify-logo" src="../static/spotify-logo.png"/>
+        <img class="navbar-brand spotify-logo" src="../static/spotify-logo.png" />
         <h1 class="text-success">Spotify Web Scraper</h1>
     </nav>
+
+    <!-- Authorisation-->
+    <h2 class="text-center">Link Your Spotify Account</h2>
+
+    <div style="padding: 0.5% 0 3% 0;">
+        <div class="row">
+            <form action="http://localhost/result" method="POST">
+                <div class="col text-center"><input type="submit" class="btn btn-success" value="Login" /></div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Debugging Buttons -->
 
@@ -22,7 +34,8 @@
     <div class="container" style="padding: 0.5% 0 3% 0;">
         <div class="row">
             <div class="col text-right"><input type="button" class="btn btn-success" value="Search Artist Name" /></div>
-            <div class="col text-left"><input type="button" class="btn btn-success" value="Pull Followed Artists" /></div>
+            <div class="col text-left"><input type="button" class="btn btn-success" value="Pull Followed Artists" />
+            </div>
         </div>
     </div>
 

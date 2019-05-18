@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 #from spswi.main.backend import pullArtists
 
 main = Blueprint('main', __name__)
@@ -7,10 +7,9 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('primary.html',)# pull_artist = pullArtists())
 
-if request.method == 'POST':
-    if request.form['submit_button'] == 'Do Something':
-        pass # do something
-    elif request.form['submit_button'] == 'Do Something Else':
-        pass # do something else
-    else:
-        pass # unknown
+@main.route('/auth')
+def auth():
+    if request.method == "POST":
+        auth = request.form
+        from spswi.main.backend import pullArtists
+        pullArtists()
