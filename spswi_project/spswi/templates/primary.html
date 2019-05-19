@@ -20,9 +20,12 @@
 
     <div style="padding: 0.5% 0 3% 0;">
         <div class="row">
-            <form action="#" method="POST">
-                <div class="col text-center"><input type="submit" class="btn btn-success" name='login' value="Login" /></div>
-            </form>
+
+            <div class="col text-center">
+                <form action="#" method="POST"><input type="submit" class="btn btn-success" name='login'
+                        value="Login" /></form>
+            </div>
+
         </div>
     </div>
 
@@ -34,12 +37,12 @@
     <div class="container" style="padding: 0.5% 0 3% 0;">
         <div class="row">
             <div class="col text-right">
-                <form action="#" method="POST"><input type="submit" class="btn btn-success" name='search_artists'
+                <form action="." method="POST"><input type="submit" class="btn btn-success" name='search_artists'
                         value="Search Artist Name" /></form>
             </div>
             <div class="col text-left">
-                <form action="#" method="POST"></form><input type="submit" class="btn btn-success" name='followed_artists'
-                    value="Pull Followed Artists" />
+                <form action="." method="POST"><input type="submit" class="btn btn-success" name='followed_artists'
+                        value="Pull Followed Artists" /></form>
             </div>
         </div>
     </div>
@@ -65,39 +68,43 @@
 
         <div class="row">
 
-
             <!-- Select box for refresh period -->
 
             <div class="col">
-                <input type="number" class="form-control" id="input-information" placeholder="1" min="1">
+                <form method="POST" action='.'><input type="number" class="form-control" name="frequency"
+                        placeholder="1" min={{ frequency }} />
 
 
-                <div class="period-input">
-                    <select class="form-control" id="input-information">
-                        <option>Days</option>
-                        <option>Months</option>
-                        <option>Years</option>
-                    </select>
-                </div>
+                    <div class="period-input">
+                        <select class="form-control" name="frequency_select">
+                            <option>Days</option>
+                            <option>Months</option>
+                            <option>Years</option>
+                        </select>
+                </form>
             </div>
-
-            <!-- Select box for time range to scrape-->
-
-            <div class="col">
-                <input type="number" class="form-control" id="input-information" placeholder="30" min="1">
-
-                <div class="period-input">
-                    <select class="form-control" id="input-information">
-                        <option>Days</option>
-                        <option>Months</option>
-                        <option>Years</option>
-                    </select>
-                </div>
-            </div>
-
-
 
         </div>
+
+        <!-- Select box for time range to scrape-->
+
+        <div class="col">
+            <form method="POST" action='.'><input type="number" class="form-control" name="days_ago" placeholder="1"
+                    min="1" />
+
+                <div class="period-input">
+                    <select class="form-control" name="days_ago_input">
+                        <option>Days</option>
+                        <option selected>Months</option>
+                        <option>Years</option>
+                    </select>
+            </form>
+        </div>
+    </div>
+
+
+
+    </div>
     </div>
 
 
