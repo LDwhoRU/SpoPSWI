@@ -22,7 +22,6 @@ def index():
             pass
 
         # if 'frequency' in request.form:
-            
         # if 'days_ago' in request.form:
         #     pass
 
