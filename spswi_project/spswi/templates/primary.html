@@ -71,7 +71,7 @@
             <!-- Select box for refresh period -->
 
             <div class="col">
-                <form method="POST" action='.'><input type="number" class="form-control" name="frequency"
+                <form method="POST" action='.'><input type="number" class="form-control" name="frequency_input"
                         placeholder="1" min={{ frequency }} />
 
 
@@ -89,11 +89,11 @@
         <!-- Select box for time range to scrape-->
 
         <div class="col">
-            <form method="POST" action='.'><input type="number" class="form-control" name="days_ago" placeholder="1"
+            <form method="POST" action='.'><input type="number" class="form-control" name="days_ago_input" placeholder="1"
                     min="1" />
 
                 <div class="period-input">
-                    <select class="form-control" name="days_ago_input">
+                    <select class="form-control" name="days_ago_select">
                         <option>Days</option>
                         <option selected>Months</option>
                         <option>Years</option>
