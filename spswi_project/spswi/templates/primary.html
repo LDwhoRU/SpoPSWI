@@ -66,45 +66,74 @@
 
         </div>
 
-        <div class="row">
+        <form method="POST" action='.'>
+            <div class="row">
 
-            <!-- Select box for refresh period -->
+                <!-- Select box for refresh period -->
 
-            <div class="col">
-                <form method="POST" action='.'><input type="number" class="form-control" name="frequency_input"
-                        placeholder="1" min={{ frequency }} />
+                <div class="col">
+                    <input type="number" class="form-control" name="frequency_input" placeholder={{ frequency_input }}
+                        min=1 />
+                        
+                    <div>
+                        <select class="form-control" name="frequency_select">
+                            {% block content %}
+                                {% if frequency_select == 'Seconds' %}
+                                    <option selected>Seconds</option>
+                                    <option>Minutes</option>
+                                    <option>Hours</option>
+                                    <option>Days</option>
+                                {% elif frequency_select == 'Minutes' %}
+                                    <option>Seconds</option>
+                                    <option selected>Minutes</option>
+                                    <option>Hours</option>
+                                    <option>Days</option>
+                                {% elif frequency_select == 'Hours' %}
+                                    <option>Seconds</option>
+                                    <option>Minutes</option>
+                                    <option selected>Hours</option>
+                                    <option>Days</option>
+                                {% elif frequency_select == 'Days' %}
+                                    <option>Seconds</option>
+                                    <option>Minutes</option>
+                                    <option>Hours</option>
+                                    <option selected>Days</option>
+                                {% endif %}
+                            {% endblock content %}
+                        </select>
+                    </div>
 
+                </div>
+
+                <!-- Select box for time range to scrape-->
+
+                <div class="col">
+                    <input type="number" class="form-control" name="days_ago_input" min="1" />
 
                     <div class="period-input">
-                        <select class="form-control" name="frequency_select">
+                        <select class="form-control" name="days_ago_select">
                             <option>Days</option>
-                            <option>Months</option>
+                            <option selected>Months</option>
                             <option>Years</option>
                         </select>
-                </form>
+                    </div>
+
+                </div>
             </div>
 
-        </div>
-
-        <!-- Select box for time range to scrape-->
-
-        <div class="col">
-            <form method="POST" action='.'><input type="number" class="form-control" name="days_ago_input" placeholder="1"
-                    min="1" />
-
-                <div class="period-input">
-                    <select class="form-control" name="days_ago_select">
-                        <option>Days</option>
-                        <option selected>Months</option>
-                        <option>Years</option>
-                    </select>
-            </form>
-        </div>
-    </div>
+            <div class="row">
+                <div class="col text-center apply">
+                    <input type="submit" class="btn btn-success" name='apply_settings' value="Apply Settings" />
+                </div>
+            </div>
+        </form>
 
 
 
-    </div>
+
+
+
+
     </div>
 
 

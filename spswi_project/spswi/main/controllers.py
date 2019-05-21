@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
 #from spswi.backend import pullArtists
-from .functions import *
 
 main = Blueprint('main', __name__)
 auth = Blueprint('auth', __name__)
@@ -13,33 +12,35 @@ year = 365
 @main.route('/', methods=['GET', 'POST'])
 def index():
 	if request.method == 'POST':
-		frequency_input = 1
-		frequncy_select = 'Days'
+		frequency_input = 30
+		frequncy_select = 'Minutes'
 		days_ago = 1
 		days_ago_select = 'Months'
 
-		frequencyMultipler(frequency)
-		##frequencyMultipler(days_ago)
+		if request.form['apply_settings'] == 'Apply Settings':
+			try:
+				frequency_input = int(request.form['frequency_input'])
+				print(frequency_input)
+			except:
+				pass
 
-		print(frequency)
+			try:
+				frequency_select = str(request.form['frequency_select'])
+				print(frequency_select)
+			except:
+				pass
 
-#		try:
-#			frequency_input = int(request.form['frequency_input'])
-#			print(frequency_input)
-#		except:
-#			pass
-#
-#		try:
-#			frequency_select = str(request.form['frequency_select'])
-#			print(frequency_select)
-#		except:
-#			pass
+			try:
+				days_ago_input = int(request.form['days_ago_input'])
+				print(days_ago_input)
+			except:
+				pass
 
-		
+			try:
+				days_ago_select = int(request.form['days_ago_select'])
+				print(days_ago_select)
+			except:
+				pass
 
-		# if 'frequency' in request.form:
-		# if 'days_ago' in request.form:
-		#	  pass
-
-	return render_template('primary.html',)# pull_artist = pullArtists())
+	return render_template('primary.html', frequency_input=frequency_input, frequency_select=frequency_select)# pull_artist = pullArtists())
 
