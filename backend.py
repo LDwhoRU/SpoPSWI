@@ -3,8 +3,12 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 import codecs
-import operator
 import datetime
+
+# filter dates
+today = datetime.date.today()
+time_ago = today - datetime.timedelta(days=30)
+print('Filtering from ' + str(time_ago))
 
 # app credentials
 cid ="244ce08ff106437f8e7565c2e796f4e3" 
@@ -33,7 +37,6 @@ class Spotify_Scrape:
     master_album = [] # master list of albums
     album_data = [] # holds temp album data information for storage in master list
     master_tracks = [] # master list of tracks
-    track_data = [] # holds temp track data information
 
     def __init__(self, user_token):
         self.sp = spotipy.Spotify(auth=user_token)
@@ -42,12 +45,6 @@ class Spotify_Scrape:
     
     def __str__(self):
         return str(self.__class__)
-
-    def timeController(self, days_ago):
-        self.today = datetime.date.today()
-        self.time_ago = self.today - datetime.timedelta(days=days_ago)
-        self.time_ago = datetime.datetime.strptime(self.time_ago, "%d/%m/%Y")
-        return self.time_ago
 
     def testSearch(self): # return test artist dictionary
         self.results = sp.search(q='artist:' + self.test_artist, type='artist')
@@ -91,42 +88,45 @@ class Spotify_Scrape:
             self.artist_URI.append(self.uri)
         return self.artist_URI
 
-    def albumURIs(self, days_ago):
+    def albumURIs(self):
+        global time_ago
         self.artistURIs()
         self.count = -1 # reset counter
-        self.timeController(days_ago)
         # Fetch Album URIs
         for occurrence in range(self.num_artists):
             self.entry = self.artist_URI[occurrence]
             self.artist_albums = sp.artist_albums(self.entry, album_type='album', limit='50')
             try:
                 for unique_album in range(len(self.artist_albums["items"])):
-                    self.date_con = self.artist_albums["items"][unique_album]["release_date"]
-                    self.date_con = datetime.datetime.strptime(self.date_con, "%d/%m/%Y")
-                    if self.time_ago > self.date_con:
+                    try:
+                        self.date_entry = self.artist_albums["items"][unique_album]["release_date"]
+                        self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y-%m-%d').date()
+                        #print(self.conv_date) # Prints dates of scraped releases
+                    except ValueError:
+                        self.date_entry = self.artist_albums["items"][unique_album]["release_date"]
+                        self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y').date()
+                        #print(self.conv_date) # Prints date where only release found
+                    if self.conv_date > time_ago: # If release date accepted, append to master list
                         self.album_data.append(self.artist_albums["items"][unique_album]["uri"])
                         self.album_data.append(self.artist_albums["items"][unique_album]["release_date"])
                         self.master_album.append(self.album_data)
-                    self.album_data = []
+                        self.album_data = []
+                    else:
+                        continue
             except IndexError:
                 continue
         return self.master_album
 
-    def albumTracks(self, days_ago):
-        self.albumURIs(days_ago)
+    def albumTracks(self):
+        self.albumURIs()
         for occurrence in range(len(self.master_album)):
             self.unique_album_uri = self.master_album[occurrence][0]
-            self.release_date = self.master_album[occurrence][1]
             self.album_tracks = sp.album_tracks(self.unique_album_uri)
             try:
                 for unique_track in range(len(self.album_tracks["items"])):
-                    self.track_data.append(self.album_tracks["items"][unique_track]["uri"])
-                    self.track_data.append(self.release_date)
-                    self.master_tracks.append(self.track_data)
-                    self.track_data = []
+                    self.master_tracks.append(self.album_tracks)
             except IndexError:
                 continue
-        self.master_tracks.sort(key=operator.itemgetter(1), reverse=True)
         with open("Output.txt", "w", encoding="utf-8") as text_file:
             print(f"{self.master_tracks}", file=text_file)
         print("Done!")
@@ -137,9 +137,8 @@ user = Spotify_Scrape(token)
 #print(user.testSearch()) # test search connection
 #print(user.debugger('artist')) # test followed artists connection
 #print(user.debugger('album'))
-#print(user.pullArtists()) # prints list with followed artist names
-#print(user.artistURIs()) # prints list of artist URIs
-#print(user.albumURIs(365)) # returns list of artist URIs
-##print(user.albumTracks())
-user.albumTracks(365)
-#print(user.timeController(365))
+##print(user.pullArtists()) # prints list with followed artist names
+##print(user.artistURIs()) # prints list of artist URIs
+#print(user.albumURIs()) # returns list of artist URIs
+#print(user.albumTracks())
+user.albumTracks()
