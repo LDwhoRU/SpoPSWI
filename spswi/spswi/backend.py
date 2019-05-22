@@ -7,7 +7,7 @@ import operator
 import datetime
 
 # Import variables from flask
-# from main.controllers import test
+# from main.controllers import frequency
 
 # app credentials
 cid = "244ce08ff106437f8e7565c2e796f4e3"

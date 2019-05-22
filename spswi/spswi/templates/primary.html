@@ -73,11 +73,11 @@
 
                 <div class="col">
                     <input type="number" class="form-control" name="frequency_input" placeholder={{ frequency_input }}
-                        min=1 />
+                        min="1" />
                         
                     <div>
                         <select class="form-control" name="frequency_select">
-                            {% block content %}
+                            {% block frequency_generation %}
                                 {% if frequency_select == 'Seconds' %}
                                     <option selected>Seconds</option>
                                     <option>Minutes</option>
@@ -99,7 +99,7 @@
                                     <option>Hours</option>
                                     <option selected>Days</option>
                                 {% endif %}
-                            {% endblock content %}
+                            {% endblock %}
                         </select>
                     </div>
 
@@ -108,13 +108,25 @@
                 <!-- Select box for time range to scrape-->
 
                 <div class="col">
-                    <input type="number" class="form-control" name="days_ago_input" min="1" />
+                    <input type="number" class="form-control" name="days_ago_input" placeholder={{ days_ago_input }} min="1" />
 
                     <div class="period-input">
                         <select class="form-control" name="days_ago_select">
-                            <option>Days</option>
-                            <option selected>Months</option>
-                            <option>Years</option>
+                            {% block days_ago_generation %}
+                                {% if days_ago_select == 'Days' %}
+                                    <option selected>Days</option>
+                                    <option>Months</option>
+                                    <option>Years</option>
+                                {% elif days_ago_select == 'Months' %}
+                                    <option>Days</option>
+                                    <option selected>Months</option>
+                                    <option>Years</option>
+                                {% elif days_ago_select == 'Years' %}
+                                    <option>Days</option>
+                                    <option>Months</option>
+                                    <option selected>Years</option>
+                                {% endif %}
+                            {% endblock %}
                         </select>
                     </div>
 
