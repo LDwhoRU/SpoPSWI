@@ -4,10 +4,11 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 import codecs
 import datetime
+import random
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=150)
+time_ago = today - datetime.timedelta(days=365)
 print('Filtering from ' + str(time_ago))
 
 # app credentials
@@ -37,6 +38,8 @@ class Spotify_Scrape:
     master_album = [] # master list of albums
     album_data = [] # holds temp album data information for storage in master list
     master_tracks = [] # master list of tracks
+    playlist_uris = [] # stores URIs of tracks in playlist to delete
+    playlist_id = 'spotify:user:alex_lossberg:playlist:2SxxmrnlUH2n37hyNUC6O6' # Spotify playlist ID to add to
 
     def __init__(self, user_token):
         self.sp = spotipy.Spotify(auth=user_token)
@@ -132,14 +135,31 @@ class Spotify_Scrape:
         print("Done!")
         return self.master_tracks
 
-    def playlist(self):
+    def playlistAdd(self):
         global username # Find correct user for playlist creation
-        self.track_ids = self.albumTracks()
-        #print(self.track_ids) # Returns and prints list of track ids to add to playlist
-        self.playlist_id = 'spotify:user:alex_lossberg:playlist:2SxxmrnlUH2n37hyNUC6O6' # Spotify playlist ID to add to
+        self.shuffled_ids = [] # Contains only 100 results of shuffled track ids
         sp.trace = False
-        self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
+        self.playlistRemove() # Remove all tracks from existing playlist
+        self.track_ids = self.albumTracks()
+        if len(self.track_ids) > 100:
+            print('Error: More than 100 tracks found')
+            random.shuffle(self.track_ids)
+            #print(self.track_ids)
+            for identifier in range(100): # Creates new list with only 100 returned results
+                self.shuffled_ids.append(self.track_ids[identifier])
+            self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+        else:
+            random.shuffle(self.track_ids)
+            self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
+        #print(self.track_ids) # Returns and prints list of track ids to add to playlist
         print(self.result)
+
+    def playlistRemove(self):
+        global username
+        self.result = sp.user_playlist(username, self.playlist_id)
+        for entry in range(len(self.result["tracks"]["items"])):
+            self.playlist_uris.append(self.result["tracks"]["items"][entry]['track']['uri'])
+        self.remove_all = sp.user_playlist_remove_all_occurrences_of_tracks(username, self.playlist_id, self.playlist_uris) # Remove all tracks from playlist
 
 user = Spotify_Scrape(token)
 
@@ -150,5 +170,6 @@ user = Spotify_Scrape(token)
 ##print(user.artistURIs()) # prints list of artist URIs
 #print(user.albumURIs()) # returns list of artist URIs
 #print(user.albumTracks())
-#user.albumTracks()
-user.playlist()
+#user.albumTracks() # Writes to text file a list of track URIs
+user.playlistAdd() # Adds tracks from within x release date
+#user.playlistRemove()
