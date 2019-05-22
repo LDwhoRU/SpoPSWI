@@ -8,7 +8,7 @@ import random
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=365)
+time_ago = today - datetime.timedelta(days=10000)
 print('Filtering from ' + str(time_ago))
 
 # app credentials
@@ -40,6 +40,7 @@ class Spotify_Scrape:
     master_tracks = [] # master list of tracks
     playlist_uris = [] # stores URIs of tracks in playlist to delete
     playlist_names = [] # stores playlist names of user
+    fixed_list = False # Restricts playlist to 100 songs
 
     def __init__(self, user_token):
         self.sp = spotipy.Spotify(auth=user_token)
@@ -142,15 +143,23 @@ class Spotify_Scrape:
         sp.trace = False
         self.playlistRemove() # Remove all tracks from existing playlist
         self.track_ids = self.albumTracks()
+        random.shuffle(self.track_ids) # Shuffle tracks
         if len(self.track_ids) > 100:
-            print('Error: More than 100 tracks found')
-            random.shuffle(self.track_ids)
-            #print(self.track_ids)
-            for identifier in range(100): # Creates new list with only 100 returned results
-                self.shuffled_ids.append(self.track_ids[identifier])
-            self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+            print('More than 100 tracks found')
+            self.number_of_lists = len(self.track_ids) // 100
+            print('No. of lists required equals ' + str(self.number_of_lists) + '. Generating...')
+            if self.fixed_list == True: # If user forces list to contain fixed amount of tracks
+                for identifier in range(100): # Creates new list with only 100 returned results
+                    self.shuffled_ids.append(self.track_ids[identifier])
+                    self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+            elif self.fixed_list == False: # If user wishes all tracks returned
+                for list_no in range(self.number_of_lists): # Populates list iteratively to not beat spotify API limit
+                    for identifier in range(100):
+                        self.shuffled_ids.append(self.track_ids[identifier])
+                    self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+                    self.shuffled_ids = []
+                    del self.track_ids[0:100]
         else:
-            random.shuffle(self.track_ids)
             self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
         #print(self.track_ids) # Returns and prints list of track ids to add to playlist
         print(self.result)
