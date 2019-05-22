@@ -172,6 +172,14 @@ class Spotify_Scrape:
             self.returned_playlist = self.result["items"][x]["uri"]
             self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
             self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
+        else:
+            self.playlistCreate()
+            for entry in range(len(self.result["items"])):
+                self.playlist_names.append(self.result["items"][entry]["name"])
+            x = self.playlist_names.index('SpotifyWebScraper')
+            self.returned_playlist = self.result["items"][x]["uri"]
+            self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
+            self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
         print(self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
 
@@ -179,6 +187,10 @@ class Spotify_Scrape:
         self.result = sp.current_user()
         self.user_id = self.result['id']
         return self.user_id
+
+    def playlistCreate(self):
+        self.userInfo()
+        self.result = sp.user_playlist_create(self.user_id,'SpotifyWebScraper')
 
 user = Spotify_Scrape(token)
 
@@ -194,3 +206,4 @@ user.playlistAdd() # Adds tracks from within x release date
 #user.playlistRemove() # Removes all tracks in specified playlist
 #user.checkPlaylists()
 #user.userInfo() # Fetches username from user id
+#user.playlistCreate() # Autogenerates unpopulated playlist for correct formatting use in other elements of the application
