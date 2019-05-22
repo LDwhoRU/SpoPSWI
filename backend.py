@@ -7,7 +7,7 @@ import datetime
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=30)
+time_ago = today - datetime.timedelta(days=150)
 print('Filtering from ' + str(time_ago))
 
 # app credentials
@@ -124,13 +124,22 @@ class Spotify_Scrape:
             self.album_tracks = sp.album_tracks(self.unique_album_uri)
             try:
                 for unique_track in range(len(self.album_tracks["items"])):
-                    self.master_tracks.append(self.album_tracks)
+                    self.master_tracks.append(self.album_tracks["items"][unique_track]["uri"])
             except IndexError:
                 continue
         with open("Output.txt", "w", encoding="utf-8") as text_file:
             print(f"{self.master_tracks}", file=text_file)
         print("Done!")
         return self.master_tracks
+
+    def playlist(self):
+        global username # Find correct user for playlist creation
+        self.track_ids = self.albumTracks()
+        #print(self.track_ids) # Returns and prints list of track ids to add to playlist
+        self.playlist_id = 'spotify:user:alex_lossberg:playlist:2SxxmrnlUH2n37hyNUC6O6' # Spotify playlist ID to add to
+        sp.trace = False
+        self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
+        print(self.result)
 
 user = Spotify_Scrape(token)
 
@@ -141,4 +150,5 @@ user = Spotify_Scrape(token)
 ##print(user.artistURIs()) # prints list of artist URIs
 #print(user.albumURIs()) # returns list of artist URIs
 #print(user.albumTracks())
-user.albumTracks()
+#user.albumTracks()
+user.playlist()
