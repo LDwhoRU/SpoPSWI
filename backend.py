@@ -161,6 +161,16 @@ class Spotify_Scrape:
             self.playlist_uris.append(self.result["tracks"]["items"][entry]['track']['uri'])
         self.remove_all = sp.user_playlist_remove_all_occurrences_of_tracks(username, self.playlist_id, self.playlist_uris) # Remove all tracks from playlist
 
+    def checkPlaylists(self):
+        self.userInfo()
+        self.result = sp.user_playlists(self.user_id)
+        print(self.result)
+
+    def userInfo(self):
+        self.result = sp.current_user()
+        self.user_id = self.result['id']
+        return self.user_id
+
 user = Spotify_Scrape(token)
 
 #print(user.testSearch()) # test search connection
@@ -171,5 +181,7 @@ user = Spotify_Scrape(token)
 #print(user.albumURIs()) # returns list of artist URIs
 #print(user.albumTracks())
 #user.albumTracks() # Writes to text file a list of track URIs
-user.playlistAdd() # Adds tracks from within x release date
-#user.playlistRemove()
+#user.playlistAdd() # Adds tracks from within x release date
+#user.playlistRemove() # Removes all tracks in specified playlist
+user.checkPlaylists()
+#user.userInfo() # Fetches username from user id
