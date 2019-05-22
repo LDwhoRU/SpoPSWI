@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request
-#from spswi.main.functions import *
 import sys
 import os
-#from spswi.backend import pullArtists
+from spswi.backend import *
+
+
+
+spotifyscrape = Spotify_Scrape(token)
 
 main = Blueprint('main', __name__)
 
@@ -28,13 +31,15 @@ def read_file(file_name, line_num):
 @main.route('/', methods=['GET', 'POST'])
 def index():
 
-	frequency_input = int(read_file('config', 0))
-	frequency_select = read_file('config', 1)
-	days_ago_input = int(read_file('config', 2))
-	days_ago_select = read_file('config', 3)
+	frequency_input = 30
+	frequency_select = 'Minutes'
+	days_ago_input = 2
+	days_ago_select = 'Months'
 
-	#replace_line(os.path.join(sys.path[0] + '/spswi/main/config.txt'), 0, frequency_input)
 	if request.method == 'POST':
+
+		if request.form['followed_artists'] == 'Pull Followed Artists':
+			print(spotifyscrape.pullArtists())
 
 		if request.form['apply_settings'] == 'Apply Settings':
 			try:
