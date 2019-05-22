@@ -39,12 +39,13 @@ class Spotify_Scrape:
     album_data = [] # holds temp album data information for storage in master list
     master_tracks = [] # master list of tracks
     playlist_uris = [] # stores URIs of tracks in playlist to delete
-    playlist_id = 'spotify:user:alex_lossberg:playlist:2SxxmrnlUH2n37hyNUC6O6' # Spotify playlist ID to add to
+    playlist_names = [] # stores playlist names of user
 
     def __init__(self, user_token):
         self.sp = spotipy.Spotify(auth=user_token)
         self.follows = sp.current_user_followed_artists(50) # pulls list of artists following
         self.num_artists = len(self.follows["artists"]["items"])
+        playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
     
     def __str__(self):
         return str(self.__class__)
@@ -164,7 +165,15 @@ class Spotify_Scrape:
     def checkPlaylists(self):
         self.userInfo()
         self.result = sp.user_playlists(self.user_id)
-        print(self.result)
+        for entry in range(len(self.result["items"])):
+            self.playlist_names.append(self.result["items"][entry]["name"])
+        if 'SpotifyWebScraper' in self.playlist_names:
+            x = self.playlist_names.index('SpotifyWebScraper')
+            self.returned_playlist = self.result["items"][x]["uri"]
+            self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
+            self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
+        print(self.playlist_id) # Prints playlist ID for debugging
+        return self.playlist_id
 
     def userInfo(self):
         self.result = sp.current_user()
@@ -181,7 +190,7 @@ user = Spotify_Scrape(token)
 #print(user.albumURIs()) # returns list of artist URIs
 #print(user.albumTracks())
 #user.albumTracks() # Writes to text file a list of track URIs
-#user.playlistAdd() # Adds tracks from within x release date
+user.playlistAdd() # Adds tracks from within x release date
 #user.playlistRemove() # Removes all tracks in specified playlist
-user.checkPlaylists()
+#user.checkPlaylists()
 #user.userInfo() # Fetches username from user id
