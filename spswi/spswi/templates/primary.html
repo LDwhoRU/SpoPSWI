@@ -11,20 +11,56 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-        <img class="navbar-brand spotify-logo" src="../static/spotify-logo.png"/>
+        <img class="navbar-brand spotify-logo" src="../static/spotify-logo.png" />
         <h1 class="text-success">Spotify Web Scraper</h1>
     </nav>
+
+    <!-- Authorisation-->
+    <h2 class="text-center">Link Your Spotify Account</h2>
+
+    <div class="container" style="padding: 0.5% 0 3% 0;">
+        <div class="row">
+
+            <div class="col text-center">
+                <form method="POST" action='#'>
+                    <div class="col text-center auth"><input type="submit" class="btn btn-success" name='login' value="Login" /></div>
+
+                    <div class="col text-center"><label for="input-information">
+                            <h5>Please paste the URL that you are redirected to after logging in, then press 'Authorise'</h5>
+                        </label>
+                    </div>
+
+                    <div class="col text-center auth"><input type="text" class="form-control url-input" name="url_input"/></div>
+
+                    <div class="col text-center auth"><input type="submit" class="btn btn-success" name='url_submit' value="Authorise" /></div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
 
     <!-- Debugging Buttons -->
 
     <h3 class="text-center" style="padding-top: 1%;">Debugging Functions:</h3>
-
-    <div class="container" style="padding: 0.5% 0 3% 0;">
-        <div class="row">
-            <div class="col text-right"><button type="button" class="btn btn-success">Search Artist Name</button></div>
-            <div class="col text-left"><button type="button" class="btn btn-success">Pull Followed Artists</button></div>
+    <form action="#" method="POST">
+        <div class="container" style="padding: 0.5% 0 3% 0;">
+            <div class="row">
+                <div class="col text-right">
+                    <input type="submit" class="btn btn-success" name='search_artists' value="Search Artist Name" />
+                </div>
+                <div class="col text-left">
+                    <input type="submit" class="btn btn-success" name='followed_artists'
+                        value="Pull Followed Artists" />
+                </div>
+            </div>
         </div>
-    </div>
+        </div>
+
+        <p class="text-center">{{ spotify_output }}</p>
+
+    </form>
 
     <h2 class="text-center">Configure Spotify Playlist Scraper:</h2>
 
@@ -44,45 +80,84 @@
 
         </div>
 
-        <div class="row">
+       
 
+        <form method="POST" action='.'>
+            <div class="row">
 
-            <!-- Select box for refresh period -->
+                <!-- Select box for refresh period -->
 
-            <div class="col">
-                <input type="number" class="form-control" id="input-information" placeholder="1" min="1">
+                <div class="col">
+                    <input type="number" class="form-control" name="frequency_input" placeholder={{ frequency_input }}
+                        min="1" />
 
+                    <div>
+                        <select class="form-control" name="frequency_select">
+                            {% block frequency_generation %}
+                                {% if frequency_select == 'Seconds' %}
+                                    <option selected>Seconds</option>
+                                    <option>Minutes</option>
+                                    <option>Hours</option>
+                                    <option>Days</option>
+                                {% elif frequency_select == 'Minutes' %}
+                                    <option>Seconds</option>
+                                    <option selected>Minutes</option>
+                                    <option>Hours</option>
+                                    <option>Days</option>
+                                {% elif frequency_select == 'Hours' %}
+                                    <option>Seconds</option>
+                                    <option>Minutes</option>
+                                    <option selected>Hours</option>
+                                    <option>Days</option>
+                                {% elif frequency_select == 'Days' %}
+                                    <option>Seconds</option>
+                                    <option>Minutes</option>
+                                    <option>Hours</option>
+                                    <option selected>Days</option>
+                                {% endif %}
+                            {% endblock %}
+                        </select>
+                    </div>
 
-                <div class="period-input">
-                    <select class="form-control" id="input-information">
-                        <option>Days</option>
-                        <option>Months</option>
-                        <option>Years</option>
-                    </select>
+                </div>
+
+                <!-- Select box for time range to scrape-->
+
+                <div class="col">
+                    <input type="number" class="form-control" name="days_ago_input" placeholder={{ days_ago_input }}
+                        min="1" />
+
+                    <div class="period-input">
+                        <select class="form-control" name="days_ago_select">
+                            {% block days_ago_generation %}
+                            {% if days_ago_select == 'Days' %}
+                            <option selected>Days</option>
+                            <option>Months</option>
+                            <option>Years</option>
+                            {% elif days_ago_select == 'Months' %}
+                            <option>Days</option>
+                            <option selected>Months</option>
+                            <option>Years</option>
+                            {% elif days_ago_select == 'Years' %}
+                            <option>Days</option>
+                            <option>Months</option>
+                            <option selected>Years</option>
+                            {% endif %}
+                            {% endblock %}
+                        </select>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Select box for time range to scrape-->
-
-            <div class="col">
-                <input type="number" class="form-control" id="input-information" placeholder="30" min="1">
-
-                <div class="period-input">
-                    <select class="form-control" id="input-information">
-                        <option>Days</option>
-                        <option>Months</option>
-                        <option>Years</option>
-                    </select>
+            <div class="row">
+                <div class="col text-center apply">
+                    <input type="submit" class="btn btn-success" name='apply_settings' value="Apply Settings" />
                 </div>
             </div>
+        </form>
 
-
-
-        </div>
     </div>
-
-
-
 
 </body>
 

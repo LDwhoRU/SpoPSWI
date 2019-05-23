@@ -1,3 +1,16 @@
 .spotify-logo {
     width: 60px;
 }
+
+.apply {
+    padding-top: 20px;
+}
+
+.url-input {
+    width: 90%;
+    padding-left: 10%;
+}
+
+.auth {
+    padding-bottom: 10px;
+}
