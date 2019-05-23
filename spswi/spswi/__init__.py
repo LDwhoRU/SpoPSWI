@@ -1,6 +1,7 @@
 from flask import Flask, render_template
-from spswi.main.controllers import main
-import backend
+from spswi.main.controllers import main#, days_ago
+# from spswi.main.backend import *
+
 
 app = Flask(__name__)
 

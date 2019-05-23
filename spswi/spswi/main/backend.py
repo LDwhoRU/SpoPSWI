@@ -9,7 +9,7 @@ from spswi.main.controllers import days_ago
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days_ago)
+time_ago = today - datetime.timedelta(days=days_ago)
 print('Filtering from ' + str(time_ago))
 
 # app credentials
@@ -29,6 +29,8 @@ if token:
 else:
     print("Token error for", username) # return error if token cannot be found
 
+print(client_credentials_manager)
+
 class Spotify_Scrape:
 
     test_artist = 'Flume' # test search string
@@ -39,13 +41,14 @@ class Spotify_Scrape:
     master_album = [] # master list of albums
     album_data = [] # holds temp album data information for storage in master list
     master_tracks = [] # master list of tracks
-    playlist_uris = [] # stores URIs of tracks in playlist to delete
-    playlist_id = 'spotify:user:mrlemon162:playlist:6RtO6vASEwFZQ9jXEdez0q' # Spotify playlist ID to add to
+    playlist_names = [] # stores playlist names of user
+    fixed_list = False # Restricts playlist to 100 songs
 
     def __init__(self, user_token):
         self.sp = spotipy.Spotify(auth=user_token)
         self.follows = sp.current_user_followed_artists(50) # pulls list of artists following
         self.num_artists = len(self.follows["artists"]["items"])
+        self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
     
     def __str__(self):
         return str(self.__class__)
@@ -142,35 +145,82 @@ class Spotify_Scrape:
         sp.trace = False
         self.playlistRemove() # Remove all tracks from existing playlist
         self.track_ids = self.albumTracks()
+        random.shuffle(self.track_ids) # Shuffle tracks
         if len(self.track_ids) > 100:
-            print('Error: More than 100 tracks found')
-            random.shuffle(self.track_ids)
-            #print(self.track_ids)
-            for identifier in range(100): # Creates new list with only 100 returned results
-                self.shuffled_ids.append(self.track_ids[identifier])
-            self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+            print('More than 100 tracks found')
+            self.number_of_lists = len(self.track_ids) // 100
+            print('No. of lists required equals ' + str(self.number_of_lists) + '. Generating...')
+            if self.fixed_list == True: # If user forces list to contain fixed amount of tracks
+                for identifier in range(100): # Creates new list with only 100 returned results
+                    self.shuffled_ids.append(self.track_ids[identifier])
+                    self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+            elif self.fixed_list == False: # If user wishes all tracks returned
+                for list_no in range(self.number_of_lists): # Populates list iteratively to not beat spotify API limit
+                    for identifier in range(100):
+                        self.shuffled_ids.append(self.track_ids[identifier])
+                    self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+                    self.shuffled_ids = []
+                    del self.track_ids[0:100]
+                self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
         else:
-            random.shuffle(self.track_ids)
             self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
         #print(self.track_ids) # Returns and prints list of track ids to add to playlist
         print(self.result)
 
     def playlistRemove(self):
         global username
-        self.result = sp.user_playlist(username, self.playlist_id)
-        for entry in range(len(self.result["tracks"]["items"])):
-            self.playlist_uris.append(self.result["tracks"]["items"][entry]['track']['uri'])
+        self.playlist_uris = [] # stores URIs of tracks in playlist to delete
+        self.result = sp.user_playlist_tracks(username, self.playlist_id)
+        for entry in range(len(self.result["items"])):
+            self.playlist_uris.append(self.result["items"][entry]['track']['uri'])
         self.remove_all = sp.user_playlist_remove_all_occurrences_of_tracks(username, self.playlist_id, self.playlist_uris) # Remove all tracks from playlist
+        # Rerun to be absolutely sure if more tracks found
+        self.result = sp.user_playlist_tracks(username, self.playlist_id)
+        if len(self.result["items"]) > 0:
+            self.playlistRemove()
+
+    def checkPlaylists(self):
+        self.userInfo()
+        self.result = sp.user_playlists(self.user_id)
+        for entry in range(len(self.result["items"])):
+            self.playlist_names.append(self.result["items"][entry]["name"])
+        if 'SpotifyWebScraper' in self.playlist_names:
+            x = self.playlist_names.index('SpotifyWebScraper')
+            self.returned_playlist = self.result["items"][x]["uri"]
+            self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
+            self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
+        else:
+            self.playlistCreate()
+            for entry in range(len(self.result["items"])):
+                self.playlist_names.append(self.result["items"][entry]["name"])
+            x = self.playlist_names.index('SpotifyWebScraper')
+            self.returned_playlist = self.result["items"][x]["uri"]
+            self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
+            self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
+        print(self.playlist_id) # Prints playlist ID for debugging
+        return self.playlist_id
+
+    def userInfo(self):
+        self.result = sp.current_user()
+        self.user_id = self.result['id']
+        return self.user_id
+
+    def playlistCreate(self):
+        self.userInfo()
+        self.result = sp.user_playlist_create(self.user_id,'SpotifyWebScraper')
 
 user = Spotify_Scrape(token)
 
-#print(user.testSearch()) # test search connection
-#print(user.debugger('artist')) # test followed artists connection
-#print(user.debugger('album'))
-#print(user.pullArtists()) # prints list with followed artist names
-##print(user.artistURIs()) # prints list of artist URIs
-#print(user.albumURIs()) # returns list of artist URIs
-#print(user.albumTracks())
-#user.albumTracks() # Writes to text file a list of track URIs
-#user.playlistAdd() # Adds tracks from within x release date
-#user.playlistRemove()
+## print(user.testSearch()) # test search connection
+## print(user.debugger('artist')) # test followed artists connection
+## print(user.debugger('album'))
+## print(user.pullArtists()) # prints list with followed artist names
+## print(user.artistURIs()) # prints list of artist URIs
+## print(user.albumURIs()) # returns list of artist URIs
+## print(user.albumTracks())
+## user.albumTracks() # Writes to text file a list of track URIs
+## user.playlistAdd() # Adds tracks from within x release date
+## user.playlistRemove() # Removes all tracks in specified playlist
+## user.checkPlaylists()
+## user.userInfo() # Fetches username from user id
+## user.playlistCreate() # Autogenerates unpopulated playlist for correct formatting use in other elements of the application

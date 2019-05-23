@@ -22,8 +22,7 @@
         <div class="row">
 
             <div class="col text-center">
-                <form action="#" method="POST"><input type="submit" class="btn btn-success" name='login'
-                        value="Login" /></form>
+                <form method="GET" target="_blank" action={{ client_credential_manager }}><input type="submit" class="btn btn-success" name='login' value="Login" /></form>
             </div>
 
         </div>
@@ -33,20 +32,23 @@
     <!-- Debugging Buttons -->
 
     <h3 class="text-center" style="padding-top: 1%;">Debugging Functions:</h3>
-
-    <div class="container" style="padding: 0.5% 0 3% 0;">
-        <div class="row">
-            <div class="col text-right">
-                <form action="#" method="POST"><input type="submit" class="btn btn-success" name='search_artists'
-                        value="Search Artist Name" /></form>
-            </div>
-            <div class="col text-left">
-                <form method="POST"><input type="submit" class="btn btn-success" name='followed_artists'
-                        value="Pull Followed Artists" /></form>
+    <form action="#" method="POST">
+        <div class="container" style="padding: 0.5% 0 3% 0;">
+            <div class="row">
+                <div class="col text-right">
+                    <input type="submit" class="btn btn-success" name='search_artists' value="Search Artist Name" />
+                </div>
+                <div class="col text-left">
+                    <input type="submit" class="btn btn-success" name='followed_artists'
+                        value="Pull Followed Artists" />
+                </div>
             </div>
         </div>
-    </div>
-    </div>
+        </div>
+
+        <p class="text-center">{{ spotify_output }}</p>
+
+    </form>
 
     <h2 class="text-center">Configure Spotify Playlist Scraper:</h2>
 
@@ -66,6 +68,8 @@
 
         </div>
 
+       
+
         <form method="POST" action='.'>
             <div class="row">
 
@@ -74,7 +78,7 @@
                 <div class="col">
                     <input type="number" class="form-control" name="frequency_input" placeholder={{ frequency_input }}
                         min="1" />
-                        
+
                     <div>
                         <select class="form-control" name="frequency_select">
                             {% block frequency_generation %}
@@ -108,24 +112,25 @@
                 <!-- Select box for time range to scrape-->
 
                 <div class="col">
-                    <input type="number" class="form-control" name="days_ago_input" placeholder={{ days_ago_input }} min="1" />
+                    <input type="number" class="form-control" name="days_ago_input" placeholder={{ days_ago_input }}
+                        min="1" />
 
                     <div class="period-input">
                         <select class="form-control" name="days_ago_select">
                             {% block days_ago_generation %}
-                                {% if days_ago_select == 'Days' %}
-                                    <option selected>Days</option>
-                                    <option>Months</option>
-                                    <option>Years</option>
-                                {% elif days_ago_select == 'Months' %}
-                                    <option>Days</option>
-                                    <option selected>Months</option>
-                                    <option>Years</option>
-                                {% elif days_ago_select == 'Years' %}
-                                    <option>Days</option>
-                                    <option>Months</option>
-                                    <option selected>Years</option>
-                                {% endif %}
+                            {% if days_ago_select == 'Days' %}
+                            <option selected>Days</option>
+                            <option>Months</option>
+                            <option>Years</option>
+                            {% elif days_ago_select == 'Months' %}
+                            <option>Days</option>
+                            <option selected>Months</option>
+                            <option>Years</option>
+                            {% elif days_ago_select == 'Years' %}
+                            <option>Days</option>
+                            <option>Months</option>
+                            <option selected>Years</option>
+                            {% endif %}
                             {% endblock %}
                         </select>
                     </div>
