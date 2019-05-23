@@ -1,3 +1,5 @@
+from spswi.main.controllers import days_ago
+
 # import modules
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -5,7 +7,6 @@ import spotipy.util as util
 import codecs
 import datetime
 import random
-from spswi.main.controllers import days_ago
 
 # filter dates
 today = datetime.date.today()
@@ -24,12 +25,11 @@ user-read-recently-played user-top-read user-library-modify user-library-read pl
 user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
 """
 token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
+print(token)
 if token:
     sp = spotipy.Spotify(auth=token) # try authentication
 else:
     print("Token error for", username) # return error if token cannot be found
-
-print(client_credentials_manager)
 
 class Spotify_Scrape:
 
@@ -211,16 +211,16 @@ class Spotify_Scrape:
 
 user = Spotify_Scrape(token)
 
-## print(user.testSearch()) # test search connection
-## print(user.debugger('artist')) # test followed artists connection
-## print(user.debugger('album'))
-## print(user.pullArtists()) # prints list with followed artist names
-## print(user.artistURIs()) # prints list of artist URIs
-## print(user.albumURIs()) # returns list of artist URIs
-## print(user.albumTracks())
-## user.albumTracks() # Writes to text file a list of track URIs
-## user.playlistAdd() # Adds tracks from within x release date
-## user.playlistRemove() # Removes all tracks in specified playlist
-## user.checkPlaylists()
-## user.userInfo() # Fetches username from user id
-## user.playlistCreate() # Autogenerates unpopulated playlist for correct formatting use in other elements of the application
+#print(user.testSearch()) # test search connection
+#print(user.debugger('artist')) # test followed artists connection
+#print(user.debugger('album'))
+##print(user.pullArtists()) # prints list with followed artist names
+##print(user.artistURIs()) # prints list of artist URIs
+#print(user.albumURIs()) # returns list of artist URIs
+#print(user.albumTracks())
+#user.albumTracks() # Writes to text file a list of track URIs
+user.playlistAdd() # Adds tracks from within x release date
+#user.playlistRemove() # Removes all tracks in specified playlist
+#user.checkPlaylists()
+#user.userInfo() # Fetches username from user id
+#user.playlistCreate() # Autogenerates unpopulated playlist for correct formatting use in other elements of the application
