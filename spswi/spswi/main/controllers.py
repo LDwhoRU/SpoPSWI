@@ -31,7 +31,6 @@ def read_file(file_name, line_num):
 	out.close()
 
 
-
 @main.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -40,18 +39,31 @@ def index():
 	days_ago_input = 2
 	days_ago_select = 'Months'
 
-	global client_credential_manager
+	
 	spotify_output = ' '
-	client_credential_manager = ' '
+	user_credentials = ' '
 
 	if request.method == 'GET':
+		pass
+		# if request.form.get('login', None) == 'Login':
+		# 	from spswi.main.backend import Spotify_Scrape, token
+		# 	spotifyscrape = Spotify_Scrape(token)
+		# 	spotifyscrape.pullArtists()
 
+		
+			
+
+
+	if request.method == 'POST':	
 		if request.form.get('login', None) == 'Login':
-			from spswi.main.backend import client_credential_manager
-			client_credential_manager = client_credential_manager
+			from spswi.main.backend import Spotify_Scrape, token
+			spotifyscrape = Spotify_Scrape(token)
+			# global spotify_output
+			blank = spotifyscrape.pullArtists()
+			
+		if request.form.get('url_submit', None) == 'Authorise':
+			global
 
-
-	if request.method == 'POST':		
 
 		if request.form.get('search_artists', None) == 'Search Artist Name':
 			from spswi.main.backend import Spotify_Scrape, token
@@ -83,7 +95,7 @@ def index():
 				print('error 2: ' + str(error))
 
 			try:
-				days_ago_input = (request.form['days_ago_input']).strip('\n')
+				days_ago_input = (request.form['days_ago_input']).rstrip()
 				replace_line('config', 2, days_ago_input)
 				print(days_ago_input)
 			except BaseException as error:
@@ -100,4 +112,4 @@ def index():
 
 	
 	
-	return render_template('primary.html', frequency_input=frequency_input, frequency_select=frequency_select, days_ago_input=days_ago_input, days_ago_select=days_ago_select, spotify_output=spotify_output, client_credential_manager=client_credential_manager)
+	return render_template('primary.html', frequency_input=frequency_input, frequency_select=frequency_select, days_ago_input=days_ago_input, days_ago_select=days_ago_select, spotify_output=spotify_output)
