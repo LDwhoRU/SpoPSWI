@@ -29,13 +29,30 @@ def read_file(line_num):
 	return lines[line_num]
 
 
+config_array = []
+	
+
+
 @main.route('/', methods=['GET', 'POST'])
 def index():
 
-	frequency_input = 30
-	frequency_select = 'Minutes'
-	days_ago_input = 2
-	days_ago_select = 'Months'
+	global config_array
+	with open('config') as inputfile:
+		for line in inputfile:
+			config_array.append(line.split(','))
+
+	print(config_array)
+	
+	fi = config_array[0][0]
+	fs = config_array[0][1]
+	di = config_array[0][2]
+	ds = config_array[0][3]
+
+
+	frequency_input = fi
+	frequency_select = fs
+	days_ago_input = di
+	days_ago_select = ds
 
 	
 	spotify_output = ' '
@@ -79,32 +96,38 @@ def index():
 
 		if request.form.get('apply_settings', None) == 'Apply Settings':
 			try:
-				frequency_input = request.form.get('frequency_input', type=int)
-				replace_line(0, frequency_input)
+				frequency_input = request.form.get('frequency_input', '30', type=int)
+				# replace_line(0, frequency_input)
 				print(frequency_input)
 			except BaseException as error:
 				print('error 1: ' + str(error))
 
 			try:
 				frequency_select = str(request.form['frequency_select'])
-				replace_line(1, frequency_select)
+				# replace_line(1, frequency_select)
 				print(frequency_select)
 			except BaseException as error:
 				print('error 2: ' + str(error))          
 
 			try:
-				days_ago_input = request.form.get('days_ago_input', type=int)
-				replace_line(2, days_ago_input)
+				days_ago_input = request.form.get('days_ago_input', '6', type=int)
+				# replace_line(2, days_ago_input)
 				print(days_ago_input)
 			except BaseException as error:
 				print('error 3: ' + str(error))
 
 			try:
 				days_ago_select = str(request.form['days_ago_select'])
-				replace_line(3, days_ago_select)
+				# replace_line(3, days_ago_select)
 				print(days_ago_select)
 			except BaseException as error:
 				print('error 4: ' + str(error))
+
+			
+			config_array = [frequency_input, frequency_select, days_ago_input, days_ago_select]
+			with open('config', 'w') as f:
+				for item in config_array:
+					f.write("%s," % item)
 
 			global days_ago
 			try:
