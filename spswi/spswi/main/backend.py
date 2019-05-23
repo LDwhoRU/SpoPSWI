@@ -1,4 +1,4 @@
-from spswi.main.controllers import days_ago
+# DON'T YOU DARE EDIT ME, I'M ONLY HERE AS A BACKUP
 
 # import modules
 import spotipy
@@ -10,22 +10,21 @@ import random
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=days_ago)
+time_ago = today - datetime.timedelta(days=1000)
 print('Filtering from ' + str(time_ago))
 
 # app credentials
-cid ="244ce08ff106437f8e7565c2e796f4e3" 
+cid ="244ce08ff106437f8e7565c2e796f4e3"
 secret = "6e652d745f094973a50ef8204b953828"
 username = ""
 redirect_url = "http://localhost:8888/callback/"
-client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret) 
+client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 scope = """
 user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
 user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
 """
 token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
-print(token)
 if token:
 	sp = spotipy.Spotify(auth=token) # try authentication
 else:
@@ -49,7 +48,7 @@ class Spotify_Scrape:
 		self.follows = sp.current_user_followed_artists(50) # pulls list of artists following
 		self.num_artists = len(self.follows["artists"]["items"])
 		self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
-	
+
 	def __str__(self):
 		return str(self.__class__)
 
@@ -134,8 +133,8 @@ class Spotify_Scrape:
 					self.master_tracks.append(self.album_tracks["items"][unique_track]["uri"])
 			except IndexError:
 				continue
-		# with open("Output.txt", "w", encoding="utf-8") as text_file:
-		#     print(f"{self.master_tracks}", file=text_file)
+		with open("Output.txt", "w", encoding="utf-8") as text_file:
+			print(f"{self.master_tracks}", file=text_file)
 		print("Done!")
 		return self.master_tracks
 
