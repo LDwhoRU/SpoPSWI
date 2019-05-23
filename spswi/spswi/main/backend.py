@@ -135,7 +135,7 @@ class Spotify_Scrape:
             except IndexError:
                 continue
         with open("Output.txt", "w", encoding="utf-8") as text_file:
-            print(f"{self.master_tracks}", file=text_file)
+            print(f'{self.master_tracks}', file=text_file)
         print("Done!")
         return self.master_tracks
 
