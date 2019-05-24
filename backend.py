@@ -1,4 +1,4 @@
-# DON'T YOU DARE EDIT ME, I'M ONLY HERE AS A BACKUP
+#from spswi.main.controllers import days_ago
 
 # import modules
 import spotipy
@@ -10,7 +10,7 @@ import random
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=1000)
+time_ago = today - datetime.timedelta(days=365)
 print('Filtering from ' + str(time_ago))
 
 # app credentials
@@ -25,6 +25,7 @@ user-read-recently-played user-top-read user-library-modify user-library-read pl
 user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
 """
 token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
+print(token)
 if token:
     sp = spotipy.Spotify(auth=token) # try authentication
 else:
@@ -190,13 +191,8 @@ class Spotify_Scrape:
             self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
         else:
             self.playlistCreate()
-            for entry in range(len(self.result["items"])):
-                self.playlist_names.append(self.result["items"][entry]["name"])
-            x = self.playlist_names.index('SpotifyWebScraper')
-            self.returned_playlist = self.result["items"][x]["uri"]
-            self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
-            self.playlist_id = f'spotify:user:{self.user_id}:{self.returned_playlist}'
-        print(self.playlist_id) # Prints playlist ID for debugging
+            self.checkPlaylists()
+        #print(self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
 
     def userInfo(self):
