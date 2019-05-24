@@ -35,7 +35,7 @@ def index():
 			try:
 				from spswi.main.backend import Spotify_Scrape, token
 				spotifyscrape = Spotify_Scrape(token)
-				
+				spotifyscrape.userAuthentication()
 				
 			except ImportError:
 				from spswi.main.backend import Spotify_Scrape, token
