@@ -208,8 +208,8 @@ class Spotify_Scrape:
         self.userInfo()
         self.result = self.sp.user_playlist_create(self.user_id,'SpotifyWebScraper')
 
-user_token_key = userAuthentication()
-user = Spotify_Scrape(user_token_key)
+# user_token_key = userAuthentication()
+# user = Spotify_Scrape(user_token_key)
 
 #print(user.testSearch()) # test search connection
 #print(user.debugger('artist')) # test followed artists connection
