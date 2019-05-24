@@ -219,7 +219,7 @@ class Spotify_Scrape:
 #print(user.albumURIs()) # returns list of artist URIs
 #print(user.albumTracks())
 #user.albumTracks() # Writes to text file a list of track URIs
-user.playlistAdd() # Adds tracks from within x release date
+# user.playlistAdd() # Adds tracks from within x release date
 #user.playlistRemove() # Removes all tracks in specified playlist
 #user.checkPlaylists()
 #user.userInfo() # Fetches username from user id
