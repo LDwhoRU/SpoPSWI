@@ -14,6 +14,7 @@ fday = 86400
 dday = 1
 dmonth = 30
 dyear = 365
+url = "http://localhost:8888/callback/"
 
 days_ago = 365
 
@@ -29,18 +30,42 @@ def index():
 	
 	spotify_output = ' '
 	user_credentials = ' '
+	token_info = ''
+	access_token = ''
+
+	
+
+	# User token data
+	def fetch_sp_oauth():
+		from spswi.main.backend import userAuthentication
+		user_auth = userAuthentication()
+		get_data = user_auth.fetch_user_auth()
+		return get_data
+	def getSPOauthURI(sp_oauth):
+		auth_url = sp_oauth.get_authorize_url()
+		fetch_token(sp_oauth)
+		return auth_url
+	def fetch_token(sp_oauth):
+		global access_token
+		url = request.url
+		code = sp_oauth.parse_response_code(url)
+		print(url)
+	
+	sp_oauth = fetch_sp_oauth()
+	auth_url = getSPOauthURI(sp_oauth)
+	#user_token = fetch_token(sp_oauth)
 	
 	if request.method == 'POST':	
-		if request.form.get('login', None) == 'Login':
-			try:
-				from spswi.main.backend import Spotify_Scrape, token
-				spotifyscrape = Spotify_Scrape(token)
-				spotifyscrape.userAuthentication()
+		# if request.form.get('login', None) == 'Login':
+		# 	try:
+		# 		from spswi.main.backend import Spotify_Scrape, token
+		# 		spotifyscrape = Spotify_Scrape(token)
+		# 		spotifyscrape.userAuthentication()
 				
-			except ImportError:
-				from spswi.main.backend import Spotify_Scrape, token
-				spotifyscrape = Spotify_Scrape(token)
-				blank = spotifyscrape.pullArtists()
+			# except ImportError:
+			# 	from spswi.main.backend import Spotify_Scrape, token
+			# 	spotifyscrape = Spotify_Scrape(token)
+			# 	blank = spotifyscrape.pullArtists()
 			
 		if request.form.get('url_submit', None) == 'Authorise':
 			try:
@@ -132,4 +157,4 @@ def index():
 
 			scheduler.add_job(playlistScraper, 'interval', seconds = float(frequency))
 
-	return render_template('primary.html', frequency_input=frequency_input, frequency_select=frequency_select, days_ago_input=days_ago_input, days_ago_select=days_ago_select, spotify_output=spotify_output)
+	return render_template('primary.html', frequency_input=frequency_input, frequency_select=frequency_select, days_ago_input=days_ago_input, days_ago_select=days_ago_select, spotify_output=spotify_output, auth_url=auth_url)

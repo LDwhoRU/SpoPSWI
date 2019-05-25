@@ -22,9 +22,11 @@
         <div class="row">
 
             <div class="col text-center">
-                <form method="POST" action='#'>
-                    <div class="col text-center auth"><input type="submit" class="btn btn-success" name='login' value="Login" /></div>
+                
+                    <!-- <form action={{ auth_url }} target="_blank" method="GET" ><div class="col text-center auth"><input type="submit" class="btn btn-success" name='login' value="Login" /></div></form> -->
+                    <div class="btn btn-success text-center"><a href={{ auth_url }} target="_blank" >Login</a></div>
 
+                    <form method="POST" action='#'>
                     <div class="col text-center"><label for="input-information">
                             <h5>Please paste the URL that you are redirected to after logging in, then press 'Authorise'</h5>
                         </label>

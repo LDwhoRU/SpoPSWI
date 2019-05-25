@@ -4,6 +4,7 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
+from spotipy import oauth2
 import codecs
 import datetime
 import random
@@ -14,26 +15,34 @@ today = datetime.date.today()
 time_ago = today - datetime.timedelta(days=365)
 print('Filtering from ' + str(time_ago))
 
-def userAuthentication():
-    # app credentials
-    cid ="244ce08ff106437f8e7565c2e796f4e3" 
-    secret = "6e652d745f094973a50ef8204b953828"
-    username = ""
-    redirect_url = "http://localhost:8888/callback/"
-    client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret) 
-    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-    scope = """
-    user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
-    user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
-    """
-    token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
-    #print(token)
-    if token:
-        sp = spotipy.Spotify(auth=token) # try authentication
-        return token
-    else:
-        print("Token error for", username) # return error if token cannot be found
+class userAuthentication:
+
+    def fetch_user_auth(self):
+        # app credentials
+        self.cid ="244ce08ff106437f8e7565c2e796f4e3" 
+        self.secret = "6e652d745f094973a50ef8204b953828"
+        self.username = ""
+        self.redirect_url = "http://localhost:8888/callback/"
+        self.client_credentials_manager = SpotifyClientCredentials(client_id=self.cid, client_secret=self.secret) 
+        self.sp = spotipy.Spotify(client_credentials_manager=self.client_credentials_manager)
+        self.scope = """
+        user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
+        user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
+        """
+        self.fetched_auth = self.oath_authenticator(self.cid,self.secret,self.redirect_url,self.scope)
+        #token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
+        #print(token)
+        #if token:
+            #sp = spotipy.Spotify(auth=token) # try authentication
+            #return token
+        #else:
+            #print("Token error for", username) # return error if token cannot be found
+        return self.fetched_auth
     
+    def oath_authenticator(self,client_id,secret,redirect,scope,path='.spotipyoauthcache'):
+        self.sp_oauth = oauth2.SpotifyOAuth(client_id,secret,redirect,scope)
+        return self.sp_oauth
+        
 
 class Spotify_Scrape:
 
