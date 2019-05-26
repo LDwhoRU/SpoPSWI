@@ -12,6 +12,11 @@ account, and generate the playlist.
 * apscheduler
 * Flask
 
+#### Executing the script
+
+run.py must be executed in order for the web server to appear.
+Your hosted version will appear at http://0.0.0.0:5000/
+
 ##### Standalone version
 
 For your convenience, included is a lightweight command-line version in the root folder, titled backend.py. The user class takes no specific parameters, but every method can be manually executed.
