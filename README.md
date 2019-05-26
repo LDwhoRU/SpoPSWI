@@ -12,6 +12,8 @@ account, and generate the playlist.
 * apscheduler
 * Flask
 
+You must also have a working Spotify account (Either free or premium)
+
 #### Executing the script
 
 run.py must be executed in order for the web server to appear.
