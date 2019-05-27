@@ -154,7 +154,7 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
         # Reset variables
         self.shuffled_ids = [] # Contains only 100 results of shuffled track ids
         self.track_counter = 0
-        self.cache_string = []
+        self.current_tracks_list = []
 
         global username # Find correct user for playlist creation
         self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
@@ -163,26 +163,12 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
         self.playlistRemove() # Remove all tracks from existing playlist
         self.track_ids = self.albumTracks() # Fetches raw list of tracks to import
         
-        with open('cache.txt', 'r') as find_cache:
-            
-            self.cache_string = find_cache.read()
-            self.cache_string = self.cache_string.replace("'","")
-            self.cache_string = self.cache_string.replace("]","")
-            self.cache_string = self.cache_string.replace("[","")
-            self.cache_string = self.cache_string.split(", ")
-            print('This is the: ' + self.cache_string)
-            #print(type(self.cache_string))
+        
         for track in self.track_ids:
-            if track in self.cache_string:
-                self.track_counter += 1
-                #print(self.track_counter)
-        if self.track_counter == len(self.cache_string):
-            print('Matching ' + str(self.track_counter))
-            new_import = False
-            pass
-        else:
-            print('Importing ' + str(self.track_counter) + ' ' + str(len(self.cache_string)))
-            new_import = True
+            self.current_tracks_list.append(track)
+            
+        if 
+      
 
         if new_import == True:
             print("Found new tracks")
@@ -190,13 +176,9 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
             if len(self.track_ids) > 100:
                 for identifier in range(100): # Creates new list with only 100 returned results
                     self.shuffled_ids.append(self.track_ids[identifier])
-                with open('cache.txt', 'w') as cache:
-                    cache.write(str(self.track_ids))
                 self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
             else:
                 self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
-                with open('cache.txt', 'w') as cache:
-                    cache.write((self.track_ids))
 
 
             #print(self.track_ids) # Returns and prints list of track ids to add to playlist
