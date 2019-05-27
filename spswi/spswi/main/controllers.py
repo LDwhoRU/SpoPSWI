@@ -25,8 +25,8 @@ def index():
 
 	
 
-	frequency_input = 30 
-	frequency_select = 'Minutes' 
+	frequency_input = 2 
+	frequency_select = 'Seconds' 
 	days_ago_input = 6 
 	days_ago_select = 'Months' 
 
@@ -120,7 +120,7 @@ def index():
 		if request.form.get('search_artists', None) == 'Search Artist Name':
 			from spswi.main.backend import Spotify_Scrape
 			master_token = fetch_token(sp_oauth,url)
-			print('fetching ' + str(master_token))
+			# print('fetching ' + str(master_token))
 			spotifyscrape = Spotify_Scrape(master_token)
 			spotify_output = spotifyscrape.testSearch()
 			print(spotify_output)
@@ -136,7 +136,7 @@ def index():
 		if request.form.get('apply_settings', None) == 'Apply Settings':
 			
 			try:
-				frequency_input = request.form.get('frequency_input', 30, type=int)
+				frequency_input = request.form.get('frequency_input', frequency_input, type=int)
 			except BaseException as error:
 				print('error 1: ' + str(error))
 
@@ -146,7 +146,7 @@ def index():
 				print('error 2: ' + str(error))          
 
 			try:
-				days_ago_input = request.form.get('days_ago_input', 6, type=int)
+				days_ago_input = request.form.get('days_ago_input', days_ago_input, type=int)
 			except BaseException as error:
 				print('error 3: ' + str(error))
 
@@ -190,17 +190,25 @@ def index():
 				pass
 
 			def playlistScraper():
-				from spswi.main.backend import Spotify_Scrape, token
-				spotifyscrape = Spotify_Scrape(token)
+				from spswi.main.backend import Spotify_Scrape
+				#print("found")
+				master_token = fetch_token(sp_oauth,url)
+				#print('fetching ' + str(master_token))
+				spotifyscrape = Spotify_Scrape(master_token)
 				try:
-					spotifyscrape.user.playlistAdd()
+					spotifyscrape.playlistAdd()
+					print("Trying")
 				except KeyError:
-					spotifyscrape.user.playlistAdd()
+					spotifyscrape.playlistAdd()
+					print("Exception")
 				except:
 					pass
 
 			scheduler = BackgroundScheduler()
 			scheduler.start()
+
+			def testFunction():
+				print('Scheduler working')
 
 			scheduler.add_job(playlistScraper, 'interval', seconds = float(frequency))
 

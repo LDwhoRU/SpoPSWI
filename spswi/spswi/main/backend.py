@@ -1,4 +1,4 @@
-#from spswi.main.controllers import days_ago
+from spswi.main.controllers import days_ago
 
 # import modules
 import spotipy
@@ -12,7 +12,7 @@ username = ""
 
 # filter dates
 today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=365)
+time_ago = today - datetime.timedelta(days=days_ago)
 print('Filtering from ' + str(time_ago))
 
 class userAuthentication:
@@ -23,10 +23,7 @@ class userAuthentication:
         self.secret = "6e652d745f094973a50ef8204b953828"
         self.username = ""
         self.redirect_url = "http://0.0.0.0:5000/"
-        self.scope = """
-        user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
-        user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
-        """
+        self.scope = 'user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify'
         self.fetched_auth = self.oath_authenticator(self.cid,self.secret,self.redirect_url,self.scope)
         #token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
         #print(token)
@@ -38,7 +35,7 @@ class userAuthentication:
         return self.fetched_auth
     
     def oath_authenticator(self,client_id,secret,redirect,scope,path='.spotipyoauthcache'):
-        self.sp_oauth = oauth2.SpotifyOAuth(client_id,secret,redirect,scope)
+        self.sp_oauth = oauth2.SpotifyOAuth(client_id,secret,redirect,scope=scope)
         return self.sp_oauth
         
 
@@ -61,14 +58,14 @@ class Spotify_Scrape:
 user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
 user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
 """
+    redirect_url = "http://0.0.0.0:5000/"
 
     def __init__(self, user_token):
-        self.creds = SpotifyClientCredentials(client_id=self.cid, client_secret=self.secret) 
-        self.pass_token = username, 
+        #print(user_token)
         self.sp = spotipy.Spotify(auth=user_token['access_token'])
         self.follows = self.sp.current_user_followed_artists(50) # pulls list of artists following
         self.num_artists = len(self.follows["artists"]["items"])
-        self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
+        
     
     def __str__(self):
         return str(self.__class__)
@@ -161,6 +158,7 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
 
     def playlistAdd(self):
         global username # Find correct user for playlist creation
+        self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
         self.shuffled_ids = [] # Contains only 100 results of shuffled track ids
         self.sp.trace = False
         self.playlistRemove() # Remove all tracks from existing playlist
@@ -185,7 +183,7 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
         else:
             self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
         #print(self.track_ids) # Returns and prints list of track ids to add to playlist
-        print(self.result)
+        # print(self.result)
 
     def playlistRemove(self):
         global username
@@ -212,7 +210,7 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
         else:
             self.playlistCreate()
             self.checkPlaylists()
-        #print(self.playlist_id) # Prints playlist ID for debugging
+        print('playlist id ' + self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
 
     def userInfo(self):
