@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from timeit import Timer
+import time
 # import time
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -17,10 +18,12 @@ dyear = 365
 url = "http://localhost:8888/callback/"
 
 days_ago = 365
-
+master_token = ''
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+
+	
 
 	frequency_input = 30 
 	frequency_select = 'Minutes' 
@@ -32,6 +35,7 @@ def index():
 	user_credentials = ' '
 	token_info = ''
 	access_token = ''
+	
 
 	
 
@@ -41,20 +45,64 @@ def index():
 		user_auth = userAuthentication()
 		get_data = user_auth.fetch_user_auth()
 		return get_data
+
+	def fetch_token(sp_oauth,url):
+		global access_token
+		#print('fetching token')
+		token_info = sp_oauth.get_cached_token()
+		if token_info:
+			access_token = token_info#['access_token']
+		else:
+			code = sp_oauth.parse_response_code(url)
+			if code:
+				try:
+					token_info = sp_oauth.get_access_token(code)
+					access_token = token_info#['access_token']
+					return access_token
+				except:
+					#print('exception ' + str(access_token))
+					return access_token
+		try:
+			#print(access_token)
+			return access_token
+		except:
+			return
+
+	def check_url(sp_oauth,found=False):
+			#global master_token
+			url = request.url
+			if 'code' in str(url):
+				master_token = fetch_token(sp_oauth,url)
+				found = True
+				return master_token
+			url_scheduler = BackgroundScheduler()
+			url_scheduler.start()
+			try:
+				if found == False:
+					url_scheduler.add_job(url, 'interval', seconds = 3)
+			except LookupError:
+				pass
+			
+
 	def getSPOauthURI(sp_oauth):
 		auth_url = sp_oauth.get_authorize_url()
-		fetch_token(sp_oauth)
+		check_url(sp_oauth)
 		return auth_url
-	def fetch_token(sp_oauth):
-		global access_token
-		url = request.url
-		code = sp_oauth.parse_response_code(url)
-		print(url)
+	
+
+	
+
+		
 	
 	sp_oauth = fetch_sp_oauth()
 	auth_url = getSPOauthURI(sp_oauth)
 	#user_token = fetch_token(sp_oauth)
 	
+	if request.method == 'GET':
+		# if request.form.get('login', None) == 'Login':
+		pass
+
+
 	if request.method == 'POST':	
 		# if request.form.get('login', None) == 'Login':
 		# 	try:
@@ -67,22 +115,21 @@ def index():
 			# 	spotifyscrape = Spotify_Scrape(token)
 			# 	blank = spotifyscrape.pullArtists()
 			
-		if request.form.get('url_submit', None) == 'Authorise':
-			try:
-				auth_url = request.form.get('url_submit', None, type=str)
-				print(auth_url)
-			except:
-				pass
+		
 
 		if request.form.get('search_artists', None) == 'Search Artist Name':
-			from spswi.main.backend import Spotify_Scrape, token
-			spotifyscrape = Spotify_Scrape(token)
+			from spswi.main.backend import Spotify_Scrape
+			master_token = fetch_token(sp_oauth,url)
+			print('fetching ' + str(master_token))
+			spotifyscrape = Spotify_Scrape(master_token)
 			spotify_output = spotifyscrape.testSearch()
 			print(spotify_output)
 
 		if request.form.get('followed_artists', None) == 'Pull Followed Artists':
-			from spswi.main.backend import Spotify_Scrape, token
-			spotifyscrape = Spotify_Scrape(token)
+			from spswi.main.backend import Spotify_Scrape
+			master_token = fetch_token(sp_oauth,url)
+			print('fetching ' + str(master_token))
+			spotifyscrape = Spotify_Scrape(master_token)
 			spotify_output = spotifyscrape.pullArtists()
 			print(spotify_output)
 

@@ -23,14 +23,14 @@ def index():
 
     if token_info:
         print("Found cached token!")
-        access_token = token_info['access_token']
+        access_token = token_info#['access_token']
     else:
         url = request.url
         code = sp_oauth.parse_response_code(url)
         if code:
             print("Found Spotify auth code in Request URL! Trying to get valid access token...")
             token_info = sp_oauth.get_access_token(code)
-            access_token = token_info['access_token']
+            access_token = token_info#['access_token']
 
     if access_token:
         print("Access token available! Trying to get user information...")

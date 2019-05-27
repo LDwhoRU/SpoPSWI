@@ -23,11 +23,9 @@ class userAuthentication:
         self.secret = "6e652d745f094973a50ef8204b953828"
         self.username = ""
         self.redirect_url = "http://0.0.0.0:5000/"
-        self.client_credentials_manager = SpotifyClientCredentials(client_id=self.cid, client_secret=self.secret) 
-        self.sp = spotipy.Spotify(client_credentials_manager=self.client_credentials_manager)
         self.scope = """
-        user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
-        user-follow-read user-follow-modify
+        user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
+        user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
         """
         self.fetched_auth = self.oath_authenticator(self.cid,self.secret,self.redirect_url,self.scope)
         #token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
@@ -56,9 +54,18 @@ class Spotify_Scrape:
     master_tracks = [] # master list of tracks
     playlist_names = [] # stores playlist names of user
     fixed_list = False # Restricts playlist to 100 songs
+    username = ""
+    cid ="244ce08ff106437f8e7565c2e796f4e3" 
+    secret = "6e652d745f094973a50ef8204b953828"
+    scope = """
+user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private
+user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify
+"""
 
     def __init__(self, user_token):
-        self.sp = spotipy.Spotify(auth=user_token)
+        self.creds = SpotifyClientCredentials(client_id=self.cid, client_secret=self.secret) 
+        self.pass_token = username, 
+        self.sp = spotipy.Spotify(auth=user_token['access_token'])
         self.follows = self.sp.current_user_followed_artists(50) # pulls list of artists following
         self.num_artists = len(self.follows["artists"]["items"])
         self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
@@ -68,7 +75,7 @@ class Spotify_Scrape:
 
     def testSearch(self): # return test artist dictionary
         self.results = self.sp.search(q='artist:' + self.test_artist, type='artist')
-        return self.results["artists"]["items"][0]
+        return self.results["artists"]["items"][0]["name"]
 
     def debugger(self, variant): # returns followed artists to identify artist dictionary labels
         if variant == 'artist':
