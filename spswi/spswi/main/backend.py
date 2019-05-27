@@ -8,6 +8,7 @@ from spotipy import oauth2
 import codecs
 import datetime
 import random
+import os
 username = ""
 
 # filter dates
@@ -25,13 +26,6 @@ class userAuthentication:
         self.redirect_url = "http://0.0.0.0:5000/"
         self.scope = 'user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify'
         self.fetched_auth = self.oath_authenticator(self.cid,self.secret,self.redirect_url,self.scope)
-        #token = util.prompt_for_user_token(username, scope, cid, secret, redirect_url)
-        #print(token)
-        #if token:
-            #sp = spotipy.Spotify(auth=token) # try authentication
-            #return token
-        #else:
-            #print("Token error for", username) # return error if token cannot be found
         return self.fetched_auth
     
     def oath_authenticator(self,client_id,secret,redirect,scope,path='.spotipyoauthcache'):
@@ -153,37 +147,60 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
                 continue
         with open("Output.txt", "w", encoding="utf-8") as text_file:
             print(f"{self.master_tracks}", file=text_file)
-        print("Done!")
+        print("Exported Album Tracks!")
         return self.master_tracks
 
-    def playlistAdd(self):
+    def playlistAdd(self,new_import=False):
+        # Reset variables
+        self.shuffled_ids = [] # Contains only 100 results of shuffled track ids
+        self.track_counter = 0
+        self.cache_string = []
+
         global username # Find correct user for playlist creation
         self.playlist_id = self.checkPlaylists() # Spotify playlist ID to add tracks to
-        self.shuffled_ids = [] # Contains only 100 results of shuffled track ids
+        #print(self.playlist_id) # Prints playlist tracks will be added to
         self.sp.trace = False
         self.playlistRemove() # Remove all tracks from existing playlist
-        self.track_ids = self.albumTracks()
-        random.shuffle(self.track_ids) # Shuffle tracks
-        if len(self.track_ids) > 100:
-            print('More than 100 tracks found')
-            self.number_of_lists = len(self.track_ids) // 100
-            print('No. of lists required equals ' + str(self.number_of_lists) + '. Generating...')
-            if self.fixed_list == True: # If user forces list to contain fixed amount of tracks
+        self.track_ids = self.albumTracks() # Fetches raw list of tracks to import
+        
+        with open('cache.txt', 'r') as find_cache:
+            
+            self.cache_string = find_cache.read()
+            self.cache_string = self.cache_string.replace("'","")
+            self.cache_string = self.cache_string.replace("]","")
+            self.cache_string = self.cache_string.replace("[","")
+            self.cache_string = self.cache_string.split(", ")
+            print('This is the: ' + self.cache_string)
+            #print(type(self.cache_string))
+        for track in self.track_ids:
+            if track in self.cache_string:
+                self.track_counter += 1
+                #print(self.track_counter)
+        if self.track_counter == len(self.cache_string):
+            print('Matching ' + str(self.track_counter))
+            new_import = False
+            pass
+        else:
+            print('Importing ' + str(self.track_counter) + ' ' + str(len(self.cache_string)))
+            new_import = True
+
+        if new_import == True:
+            print("Found new tracks")
+            random.shuffle(self.track_ids) # Shuffle tracks
+            if len(self.track_ids) > 100:
                 for identifier in range(100): # Creates new list with only 100 returned results
                     self.shuffled_ids.append(self.track_ids[identifier])
-                    self.result = sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
-            elif self.fixed_list == False: # If user wishes all tracks returned
-                for list_no in range(self.number_of_lists): # Populates list iteratively to not beat spotify API limit
-                    for identifier in range(100):
-                        self.shuffled_ids.append(self.track_ids[identifier])
-                    self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
-                    self.shuffled_ids = []
-                    del self.track_ids[0:100]
+                with open('cache.txt', 'w') as cache:
+                    cache.write(str(self.track_ids))
+                self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.shuffled_ids)
+            else:
                 self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
-        else:
-            self.result = self.sp.user_playlist_add_tracks(username, self.playlist_id, self.track_ids)
-        #print(self.track_ids) # Returns and prints list of track ids to add to playlist
-        # print(self.result)
+                with open('cache.txt', 'w') as cache:
+                    cache.write((self.track_ids))
+
+
+            #print(self.track_ids) # Returns and prints list of track ids to add to playlist
+        # # print(self.result)
 
     def playlistRemove(self):
         global username
@@ -210,7 +227,7 @@ user-read-playback-state user-modify-playback-state user-read-currently-playing 
         else:
             self.playlistCreate()
             self.checkPlaylists()
-        print('playlist id ' + self.playlist_id) # Prints playlist ID for debugging
+        #print('playlist id ' + self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
 
     def userInfo(self):

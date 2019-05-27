@@ -197,18 +197,17 @@ def index():
 				spotifyscrape = Spotify_Scrape(master_token)
 				try:
 					spotifyscrape.playlistAdd()
-					print("Trying")
+					#print("Trying")
 				except KeyError:
 					spotifyscrape.playlistAdd()
-					print("Exception")
+					#print("Exception")
 				except:
 					pass
+			
+			playlistScraper()
 
 			scheduler = BackgroundScheduler()
 			scheduler.start()
-
-			def testFunction():
-				print('Scheduler working')
 
 			scheduler.add_job(playlistScraper, 'interval', seconds = float(frequency))
 
