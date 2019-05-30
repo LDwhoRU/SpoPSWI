@@ -11,10 +11,7 @@ import random
 import os
 username = ""
 
-# filter dates
-today = datetime.date.today()
-time_ago = today - datetime.timedelta(days=days_ago)
-print('Filtering from ' + str(time_ago))
+
 
 class userAuthentication:
 
@@ -84,6 +81,12 @@ class Spotify_Scrape:
 
     def uriAlbums(self,artist_uri):
         global time_ago
+
+        # filter dates
+        today = datetime.date.today()
+        time_ago = today - datetime.timedelta(days=days_ago)
+        print('Filtering from ' + str(time_ago))
+
         self.master_album = []
         self.album_data = []
         for x in range(len(artist_uri)):
