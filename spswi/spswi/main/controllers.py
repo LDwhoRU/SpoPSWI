@@ -189,7 +189,7 @@ def index():
 			except:
 				pass
 			
-			def newPlaylist():
+			def newPlaylist(playlist_id,spotifyscrape):
 				with open('playlist.txt', 'w') as check:
 							check.write(playlist_id)
 				print("new playlist")
@@ -213,9 +213,9 @@ def index():
 					if playlist_id == cached_id:
 						print("Same playlist")
 					else:
-						newPlaylist()
+						newPlaylist(playlist_id,spotifyscrape)
 				except:
-					newPlaylist()
+					newPlaylist(playlist_id,spotifyscrape)
 
 			playlistScraper()
 
