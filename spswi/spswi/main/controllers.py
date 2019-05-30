@@ -198,8 +198,9 @@ def index():
 				spotifyscrape = Spotify_Scrape(master_token)
 				try:
 					playlist_id = spotifyscrape.checkPlaylists()
-					print("new = " + playlist_id)
-					print("old = " + previous_id)
+					previous_id
+					#print("new = " + playlist_id)
+					#print("old = " + previous_id)
 					previous_id = playlist_id
 					return previous_id, playlist_id
 				except:
