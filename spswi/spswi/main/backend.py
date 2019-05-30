@@ -101,6 +101,7 @@ class Spotify_Scrape:
                         #print(self.conv_date) # Prints date where only release found
                     if self.conv_date > time_ago: # If release date accepted, append to master list
                         print(self.conv_date) # Prints dates of scraped releases
+                        print(days_ago)
                         self.album_data.append(self.artist_albums["items"][unique_album]["uri"])
                         self.album_data.append(self.artist_albums["items"][unique_album]["release_date"])
                         self.master_album.append(self.album_data)
