@@ -196,9 +196,12 @@ def index():
 				spotifyscrape = Spotify_Scrape(master_token)
 				playlist_id = spotifyscrape.checkPlaylists()
 				print("Current playlist is: " + playlist_id)
-				with open('playlist.txt', 'r') as check:
-					cached_id = check.read()
-				print("Old id is : " + cached_id)
+				try:
+					with open('playlist.txt', 'r') as check:
+						cached_id = check.read()
+					print("Old id is : " + cached_id)
+				except FileNotFoundError:
+					print("not found")
 				if playlist_id == cached_id:
 					print("Same playlist")
 				else:
