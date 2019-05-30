@@ -189,7 +189,6 @@ def index():
 			except:
 				pass
 			
-			previous_id = ""
 
 			def playlistScraper():
 				global previous_id
@@ -198,11 +197,18 @@ def index():
 				spotifyscrape = Spotify_Scrape(master_token)
 				try:
 					playlist_id = spotifyscrape.checkPlaylists()
-					previous_id
-					#print("new = " + playlist_id)
-					#print("old = " + previous_id)
-					previous_id = playlist_id
-					return previous_id, playlist_id
+					print("Current playlist is: " + playlist_id)
+					with open('playlist.txt', 'r') as check:
+						cached_id = check.read()
+					print("Old id is : " + cached_id)
+					if playlist_id == cached_id:
+						print("Same playlist")
+					else:
+						with open('playlist.txt', 'w') as check:
+							check.write(playlist_id)
+						print("new playlist")
+
+
 				except:
 					pass
 
