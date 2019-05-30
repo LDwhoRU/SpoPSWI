@@ -202,9 +202,14 @@ def index():
 					print("Old id is : " + cached_id)
 				except FileNotFoundError:
 					print("not found")
-				if playlist_id == cached_id:
-					print("Same playlist")
-				else:
+				try:
+					if playlist_id == cached_id:
+						print("Same playlist")
+					else:
+						with open('playlist.txt', 'w') as check:
+							check.write(playlist_id)
+						print("new playlist")
+				except:
 					with open('playlist.txt', 'w') as check:
 						check.write(playlist_id)
 					print("new playlist")
