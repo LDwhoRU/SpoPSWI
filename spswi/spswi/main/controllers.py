@@ -199,9 +199,6 @@ def index():
 					spotifyscrape.checkPlaylists()
 					#spotifyscrape.playlistAdd()
 					#print("Trying")
-				except KeyError:
-					#spotifyscrape.playlistAdd()
-					#print("Exception")
 				except:
 					pass
 			
