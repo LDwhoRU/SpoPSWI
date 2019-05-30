@@ -23,7 +23,7 @@ class userAuthentication:
         self.cid ="244ce08ff106437f8e7565c2e796f4e3" 
         self.secret = "6e652d745f094973a50ef8204b953828"
         self.username = ""
-        self.redirect_url = "http://0.0.0.0:5000/"
+        self.redirect_url = "http://10.0.0.6:5000/"
         self.scope = 'user-read-recently-played user-top-read user-library-modify user-library-read playlist-read-private playlist-modify-public playlist-modify-private playlist-read-collaborative user-read-email user-read-birthdate user-read-private user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming user-follow-read user-follow-modify'
         self.fetched_auth = self.oath_authenticator(self.cid,self.secret,self.redirect_url,self.scope)
         return self.fetched_auth
