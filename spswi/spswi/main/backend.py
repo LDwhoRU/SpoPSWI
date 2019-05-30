@@ -125,6 +125,16 @@ class Spotify_Scrape:
         print("Exported Album Tracks!")
         return self.master_tracks
 
-    def addPlaylist(self):
-        pass
+    def addPlaylist(self,track_uri,playlist):
+        self.sp.trace = False
+        self.user = self.userInfo()
+        self.shuffled_ids = []
+        random.shuffle(track_uri)
+        if len(track_uri) > 100:
+            for x in range(100): # Creates new list with only 100 returned results
+                self.shuffled_ids.append(track_uri[x])
+            self.result = self.sp.user_playlist_add_tracks(self.user, playlist, self.shuffled_ids)
+            self.shuffled_ids = []
+        else:
+            self.result = self.sp.user_playlist_add_tracks(self.user, playlist, track_uri)
 
