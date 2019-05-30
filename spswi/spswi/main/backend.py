@@ -36,7 +36,7 @@ class userAuthentication:
 class Spotify_Scrape:
 
     def __init__(self, user_token):
-        print("user token = " + str(user_token))
+        #print("user token = " + str(user_token))
         self.sp = spotipy.Spotify(auth=user_token['access_token'])
         
     def testSearch(self):
@@ -51,3 +51,13 @@ class Spotify_Scrape:
             self.artist_names.append(self.follows["artists"]["items"][artist]["name"])
         self.artist_names.sort()
         return self.artist_names
+    
+    def userInfo(self):
+        self.result = self.sp.current_user()
+        return self.result['id']
+
+    def checkPlaylists(self):
+        self.user = self.userInfo()
+        self.result = self.sp.user_playlists(self.user)
+        print(self.result["items"])
+

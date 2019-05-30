@@ -196,10 +196,11 @@ def index():
 				#print('fetching ' + str(master_token))
 				spotifyscrape = Spotify_Scrape(master_token)
 				try:
-					spotifyscrape.playlistAdd()
+					spotifyscrape.checkPlaylists()
+					#spotifyscrape.playlistAdd()
 					#print("Trying")
 				except KeyError:
-					spotifyscrape.playlistAdd()
+					#spotifyscrape.playlistAdd()
 					#print("Exception")
 				except:
 					pass
