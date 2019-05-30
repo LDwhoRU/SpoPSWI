@@ -42,3 +42,12 @@ class Spotify_Scrape:
     def testSearch(self):
         self.results = self.sp.search(q='artist:' + "Flume", type='artist')
         return self.results["artists"]["items"][0]
+
+    def pullArtists(self):
+        self.artist_names = []
+        self.follows = self.sp.current_user_followed_artists(50)
+        self.num_artists = len(self.follows["artists"]["items"])
+        for artist in range(self.num_artists):
+            self.artist_names.append(self.follows["artists"]["items"][artist]["name"])
+        self.artist_names.sort()
+        return self.artist_names
