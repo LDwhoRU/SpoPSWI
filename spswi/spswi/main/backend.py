@@ -83,7 +83,7 @@ class Spotify_Scrape:
         print(days_ago)
 
         today = datetime.date.today()
-        time_ago = today - datetime.timedelta(days=days_ago)
+        time_ago = today - datetime.timedelta(days=265)
         print('Filtering from ' + str(time_ago))
 
         self.master_album = []
