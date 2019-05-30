@@ -56,10 +56,6 @@ class Spotify_Scrape:
         self.result = self.sp.current_user()
         return self.result['id']
 
-    def createPlaylist(self):
-        print("Generating new playlist...")
-        pass
-
     def checkPlaylists(self):
         self.playlist_names = []
         self.user = self.userInfo()
@@ -73,7 +69,7 @@ class Spotify_Scrape:
             self.returned_playlist = self.returned_playlist.replace("spotify:", "") # formats scraped uri into playlist identifier
             self.playlist_id = f'spotify:user:{self.user}:{self.returned_playlist}'
         else:
-            self.createPlaylist()
+            self.generate = self.sp.user_playlist_create(self.user,'SpotifyWebScraper') # Generate new playlist
             self.checkPlaylists()
         print('playlist id ' + self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
