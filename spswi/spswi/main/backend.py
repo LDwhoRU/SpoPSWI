@@ -94,7 +94,7 @@ class Spotify_Scrape:
                     try:
                         self.date_entry = self.artist_albums["items"][unique_album]["release_date"]
                         self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y-%m-%d').date()
-                        #print(self.conv_date) # Prints dates of scraped releases
+                        print(self.conv_date) # Prints dates of scraped releases
                     except ValueError:
                         self.date_entry = self.artist_albums["items"][unique_album]["release_date"]
                         self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y').date()
