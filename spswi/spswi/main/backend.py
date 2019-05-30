@@ -82,6 +82,34 @@ class Spotify_Scrape:
             self.artist_uris.append(self.follows["artists"]["items"][artist]["uri"])
         return self.artist_uris
 
+    def uriAlbums(self,artist_uri):
+        global time_ago
+        self.master_album = []
+        self.album_data = []
+        for x in range(len(artist_uri)):
+            self.entry = artist_uri[x]
+            self.artist_albums = self.sp.artist_albums(self.entry, album_type='album', limit='50')
+            try:
+                for unique_album in range(len(self.artist_albums["items"])):
+                    try:
+                        self.date_entry = self.artist_albums["items"][unique_album]["release_date"]
+                        self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y-%m-%d').date()
+                        #print(self.conv_date) # Prints dates of scraped releases
+                    except ValueError:
+                        self.date_entry = self.artist_albums["items"][unique_album]["release_date"]
+                        self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y').date()
+                        #print(self.conv_date) # Prints date where only release found
+                    if self.conv_date > time_ago: # If release date accepted, append to master list
+                        self.album_data.append(self.artist_albums["items"][unique_album]["uri"])
+                        self.album_data.append(self.artist_albums["items"][unique_album]["release_date"])
+                        self.master_album.append(self.album_data)
+                        self.album_data = []
+                    else:
+                        continue
+            except IndexError:
+                continue
+        return self.master_album
+
     def addPlaylist(self):
         pass
 
