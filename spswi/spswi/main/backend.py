@@ -36,8 +36,9 @@ class userAuthentication:
 class Spotify_Scrape:
 
     def __init__(self, user_token):
-        print("user token is")
-        print(user_token)
+        print("user token = " + str(user_token))
         self.sp = spotipy.Spotify(auth=user_token['access_token'])
-        print("self.sp class is")
-        print(self.sp)
+        
+    def testSearch(self):
+        self.results = self.sp.search(q='artist:' + "Flume", type='artist')
+        return self.results["artists"]["items"][0]
