@@ -195,8 +195,10 @@ def index():
 				print("new playlist")
 				artist_uri = spotifyscrape.uriArtist()
 				album_uri = spotifyscrape.uriAlbums(artist_uri)
+				track_uri = spotifyscrape.uriTracks(album_uri)
 				#print(artist_uri)
-				print(album_uri)
+				#print(album_uri)
+				print(track_uri)
 
 
 			def playlistScraper():

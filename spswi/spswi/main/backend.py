@@ -110,6 +110,21 @@ class Spotify_Scrape:
                 continue
         return self.master_album
 
+    def uriTracks(self,album_uri):
+        self.master_tracks = []
+        for x in range(len(album_uri)):
+            self.unique_album_uri = album_uri[x][0]
+            self.album_tracks = self.sp.album_tracks(self.unique_album_uri)
+            try:
+                for unique_track in range(len(self.album_tracks["items"])):
+                    self.master_tracks.append(self.album_tracks["items"][unique_track]["uri"])
+            except IndexError:
+                continue
+        with open("Output.txt", "w", encoding="utf-8") as text_file:
+            print(f"{self.master_tracks}", file=text_file)
+        print("Exported Album Tracks!")
+        return self.master_tracks
+
     def addPlaylist(self):
         pass
 
