@@ -189,6 +189,13 @@ def index():
 			except:
 				pass
 			
+			def newPlaylist():
+				with open('playlist.txt', 'w') as check:
+							check.write(playlist_id)
+				print("new playlist")
+				artist_uri = spotifyscrape.uriArtist()
+				print(artist_uri)
+
 
 			def playlistScraper():
 				from spswi.main.backend import Spotify_Scrape
@@ -199,20 +206,16 @@ def index():
 				try:
 					with open('playlist.txt', 'r') as check:
 						cached_id = check.read()
-					print("Old id is : " + cached_id)
+					#print("Old id is : " + cached_id)
 				except FileNotFoundError:
 					print("not found")
 				try:
 					if playlist_id == cached_id:
 						print("Same playlist")
 					else:
-						with open('playlist.txt', 'w') as check:
-							check.write(playlist_id)
-						print("new playlist")
+						newPlaylist()
 				except:
-					with open('playlist.txt', 'w') as check:
-						check.write(playlist_id)
-					print("new playlist")
+					newPlaylist()
 
 			playlistScraper()
 

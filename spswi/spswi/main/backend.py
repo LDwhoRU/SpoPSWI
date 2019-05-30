@@ -74,3 +74,14 @@ class Spotify_Scrape:
         #print('playlist id = ' + self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
 
+    def uriArtist(self):
+        self.artist_uris = []
+        self.follows = self.sp.current_user_followed_artists(50)
+        self.num_artists = len(self.follows["artists"]["items"])
+        for artist in range(self.num_artists):
+            self.artist_uris.append(self.follows["artists"]["items"][artist]["uri"])
+        return self.artist_uris
+
+    def addPlaylist(self):
+        pass
+
