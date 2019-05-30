@@ -80,7 +80,6 @@ class Spotify_Scrape:
         return self.artist_uris
 
     def uriAlbums(self,artist_uri):
-        global time_ago
 
         # filter dates
         today = datetime.date.today()
