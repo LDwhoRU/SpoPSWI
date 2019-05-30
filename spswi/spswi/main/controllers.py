@@ -18,6 +18,7 @@ dyear = 365
 url = "http://localhost:8888/callback/"
 
 days_ago = ' '
+
 master_token = ''
 
 @main.route('/', methods=['GET', 'POST'])
