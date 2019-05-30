@@ -89,34 +89,15 @@ def index():
 		auth_url = sp_oauth.get_authorize_url()
 		check_url(sp_oauth)
 		return auth_url
-	
-
-	
-
 		
 	
 	sp_oauth = fetch_sp_oauth()
 	auth_url = getSPOauthURI(sp_oauth)
 	#user_token = fetch_token(sp_oauth)
-	
-	if request.method == 'GET':
-		# if request.form.get('login', None) == 'Login':
-		pass
+
 
 
 	if request.method == 'POST':	
-		# if request.form.get('login', None) == 'Login':
-		# 	try:
-		# 		from spswi.main.backend import Spotify_Scrape, token
-		# 		spotifyscrape = Spotify_Scrape(token)
-		# 		spotifyscrape.userAuthentication()
-				
-			# except ImportError:
-			# 	from spswi.main.backend import Spotify_Scrape, token
-			# 	spotifyscrape = Spotify_Scrape(token)
-			# 	blank = spotifyscrape.pullArtists()
-			
-		
 
 		if request.form.get('search_artists', None) == 'Search Artist Name':
 			from spswi.main.backend import Spotify_Scrape
@@ -161,14 +142,17 @@ def index():
 			try:
 				if days_ago_select == 'Days':
 					days_ago = days_ago_input * dday
+					return days_ago
 					print(days_ago)
 
 				elif days_ago_select == 'Months':
 					days_ago = days_ago_input * dmonth
+					return days_ago
 					print(days_ago)
 
 				elif days_ago_select == 'Years':
 					days_ago = days_ago_input * dyear
+					return days_ago
 					print(days_ago)
 
 			except:
@@ -195,7 +179,7 @@ def index():
 							check.write(playlist_id)
 				print("new playlist")
 				artist_uri = spotifyscrape.uriArtist()
-				album_uri = spotifyscrape.uriAlbums(artist_uri)
+				album_uri = spotifyscrape.uriAlbums(artist_uri, days_ago)
 				track_uri = spotifyscrape.uriTracks(album_uri)
 				add_playlist = spotifyscrape.addPlaylist(track_uri,playlist_id)
 				#print(artist_uri)

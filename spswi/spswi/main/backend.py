@@ -1,4 +1,4 @@
-from spswi.main.controllers import days_ago
+# from spswi.main.controllers import days_ago
 
 # import modules
 import spotipy
@@ -79,15 +79,12 @@ class Spotify_Scrape:
             self.artist_uris.append(self.follows["artists"]["items"][artist]["uri"])
         return self.artist_uris
 
-    def uriAlbums(self,artist_uri):
+    def uriAlbums(self,artist_uri,days_ago):
         print(days_ago)
-        # filter dates
-        try:
-            today = datetime.date.today()
-            time_ago = today - datetime.timedelta(days=days_ago)
-            print('Filtering from ' + str(time_ago))
-        except TypeError:
-            pass
+
+        today = datetime.date.today()
+        time_ago = today - datetime.timedelta(days=days_ago)
+        print('Filtering from ' + str(time_ago))
 
         self.master_album = []
         self.album_data = []
