@@ -189,22 +189,22 @@ def index():
 			except:
 				pass
 			
-			previous_playlist = ""
+			previous_id = ""
 
 			def playlistScraper():
+				global previous_id
 				from spswi.main.backend import Spotify_Scrape
 				master_token = fetch_token(sp_oauth,url)
 				spotifyscrape = Spotify_Scrape(master_token)
 				try:
 					playlist_id = spotifyscrape.checkPlaylists()
-					if playlist_id != previous_playlist:
-						print("New Playlist")
-					else:
-						print("Same Playlist, No Updates Required")
-					previous_playlist = playlist_id
+					print("new = " + playlist_id)
+					print("old = " + previous_id)
+					previous_id = playlist_id
+					return previous_id, playlist_id
 				except:
 					pass
-			
+
 			playlistScraper()
 
 			scheduler = BackgroundScheduler()

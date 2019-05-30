@@ -71,6 +71,6 @@ class Spotify_Scrape:
         else:
             self.generate = self.sp.user_playlist_create(self.user,'SpotifyWebScraper') # Generate new playlist
             self.checkPlaylists()
-        print('playlist id = ' + self.playlist_id) # Prints playlist ID for debugging
+        #print('playlist id = ' + self.playlist_id) # Prints playlist ID for debugging
         return self.playlist_id
 
