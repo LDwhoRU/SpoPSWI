@@ -191,26 +191,20 @@ def index():
 			
 
 			def playlistScraper():
-				global previous_id
 				from spswi.main.backend import Spotify_Scrape
 				master_token = fetch_token(sp_oauth,url)
 				spotifyscrape = Spotify_Scrape(master_token)
-				try:
-					playlist_id = spotifyscrape.checkPlaylists()
-					print("Current playlist is: " + playlist_id)
-					with open('playlist.txt', 'r') as check:
-						cached_id = check.read()
-					print("Old id is : " + cached_id)
-					if playlist_id == cached_id:
-						print("Same playlist")
-					else:
-						with open('playlist.txt', 'w') as check:
-							check.write(playlist_id)
-						print("new playlist")
-
-
-				except:
-					pass
+				playlist_id = spotifyscrape.checkPlaylists()
+				print("Current playlist is: " + playlist_id)
+				with open('playlist.txt', 'r') as check:
+					cached_id = check.read()
+				print("Old id is : " + cached_id)
+				if playlist_id == cached_id:
+					print("Same playlist")
+				else:
+					with open('playlist.txt', 'w') as check:
+						check.write(playlist_id)
+					print("new playlist")
 
 			playlistScraper()
 
