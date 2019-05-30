@@ -188,17 +188,20 @@ def index():
 
 			except:
 				pass
+			
+			previous_playlist = ""
 
 			def playlistScraper():
 				from spswi.main.backend import Spotify_Scrape
-				#print("found")
 				master_token = fetch_token(sp_oauth,url)
-				#print('fetching ' + str(master_token))
 				spotifyscrape = Spotify_Scrape(master_token)
 				try:
-					spotifyscrape.checkPlaylists()
-					#spotifyscrape.playlistAdd()
-					#print("Trying")
+					playlist_id = spotifyscrape.checkPlaylists()
+					if playlist_id != previous_playlist:
+						print("New Playlist")
+					else:
+						print("Same Playlist, No Updates Required")
+					previous_playlist = playlist_id
 				except:
 					pass
 			
