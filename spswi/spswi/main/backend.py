@@ -79,7 +79,7 @@ class Spotify_Scrape:
             self.artist_uris.append(self.follows["artists"]["items"][artist]["uri"])
         return self.artist_uris
 
-    def uriAlbums(self,artist_uri,days_ago):
+    def uriAlbums(self,artist_uri):
         print(days_ago)
 
         today = datetime.date.today()

@@ -179,7 +179,7 @@ def index():
 							check.write(playlist_id)
 				print("new playlist")
 				artist_uri = spotifyscrape.uriArtist()
-				album_uri = spotifyscrape.uriAlbums(artist_uri, days_ago)
+				album_uri = spotifyscrape.uriAlbums(artist_uri)
 				track_uri = spotifyscrape.uriTracks(album_uri)
 				add_playlist = spotifyscrape.addPlaylist(track_uri,playlist_id)
 				#print(artist_uri)
