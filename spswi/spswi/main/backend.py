@@ -80,11 +80,14 @@ class Spotify_Scrape:
         return self.artist_uris
 
     def uriAlbums(self,artist_uri):
-
+        print(days_ago)
         # filter dates
-        today = datetime.date.today()
-        time_ago = today - datetime.timedelta(days=days_ago)
-        print('Filtering from ' + str(time_ago))
+        try:
+            today = datetime.date.today()
+            time_ago = today - datetime.timedelta(days=days_ago)
+            print('Filtering from ' + str(time_ago))
+        except TypeError:
+            pass
 
         self.master_album = []
         self.album_data = []
@@ -102,8 +105,8 @@ class Spotify_Scrape:
                         self.conv_date = datetime.datetime.strptime(self.date_entry, '%Y').date()
                         #print(self.conv_date) # Prints date where only release found
                     if self.conv_date > time_ago: # If release date accepted, append to master list
-                        print(self.conv_date) # Prints dates of scraped releases
-                        print(days_ago)
+                        # print(self.conv_date) # Prints dates of scraped releases
+                        # print(days_ago)
                         self.album_data.append(self.artist_albums["items"][unique_album]["uri"])
                         self.album_data.append(self.artist_albums["items"][unique_album]["release_date"])
                         self.master_album.append(self.album_data)
