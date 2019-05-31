@@ -17,10 +17,7 @@ You must also have a working Spotify account (Either free or premium)
 #### Executing the script
 
 run.py must be executed in order for the web server to appear.
-Your hosted version will appear at http://0.0.0.0:5000/
+Your hosted version will appear at the local IP address that the script is run from.
 
-##### Standalone version
-
-For your convenience, included is a lightweight command-line version in the root folder, titled backend.py. The user class takes no specific parameters, but every method can be manually executed.
 
 *IFB102 Submission Sem 1 2019*
