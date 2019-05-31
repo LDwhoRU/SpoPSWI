@@ -1,4 +1,4 @@
-spotifyPlaylistScraper
+SpoPSWI
 ==================================
 
 spotifyPlaylistScraper is a semi-automated tool designed for Linux and MacOS that allows users to populate a spotify playlist at
